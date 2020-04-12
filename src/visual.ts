@@ -123,34 +123,41 @@ export class Visual implements IVisual {
         var extra={};
         var retorno = [];
         if (value.data.negativeValue<0) {
+            var arcValue = value.data.negativeValue*(value.value/value.data.totalSegments);
+            var arcValuePerc = 100*Math.abs(arcValue/value.data.totalSegments);
+            extra = {
+                displayName: "Residual value: ",
+                value: "Value: " + (arcValue).toFixed(2) + ". (" + arcValuePerc.toFixed(2) + "% of total pie)",
+                color:"black"
+            }
+            retorno.push(extra);
             extra = {
                 displayName: "Category: " + value.data.negativeCategory,
-                value: "Total value: " + value.data.negativeValue.toString(),
+                value: "Value: " + value.data.negativeValue.toString() + ". (" + (100*Math.abs(value.data.negativeValue/value.data.totalArcs)).toFixed(2) + "% of negatives values)",
                 color: value.data.negativeColor
             }
             retorno.push(extra);
 
-            extra = {
-                displayName: "Arc estimated value over section",
-                value: Math.abs(value.data.negativeValue*(value.value/value.data.totalSegments)).toFixed(2),
-                color:"black"
-            }
-            retorno.push(extra);
+            
         } else {
+            var segmentValue = Math.abs(myValue*value.data.totalArcs/value.data.totalSegments);
+            var segmentValuePerc = 100*segmentValue/value.data.totalSegments;
             extra = {
-                displayName: "Segment    estimated value",
-                value: Math.abs(myValue*value.data.totalArcs/value.data.totalSegments).toFixed(2),
+                displayName: "Residual value:",
+                value: "Value: " + segmentValue.toFixed(2) + ". (" + segmentValuePerc.toFixed(2) + "% of total pie)",
                 color:"white"
             }
             retorno.push(extra);
+
+            retorno.push({
+                displayName: "Category: " + myCategory,
+                value: "Value: " + myValue.toString() + ". (" + (100*myValue/value.data.totalSegments).toFixed(2) + "% of positives)",
+                //total: value.data.totalSegments.value.toString(),
+                color: value.data.color
+                //,header: language && "displayed language " + language
+            });
         }
-        retorno.push({
-            displayName: "Category: " + myCategory,
-            value: "Value: " + myValue.toString() + ". " + absolute,
-            //total: value.data.totalSegments.value.toString(),
-            color: value.data.color
-            //,header: language && "displayed language " + language
-        });
+        
         
         
         return retorno;
@@ -301,6 +308,7 @@ export class Visual implements IVisual {
                     falseSerie[j].negativeCategory = actualCategory;
                     falseSerie[j].selectionId = actualItem.selectionId;
                     falseSerie[j].negativeColor = actualColor;
+                    falseSerie[j].totalArcs = actualItem.totalArcs;
                 };
     
                 let targetArea : number = -1*actualValue * areaPerUnit;
@@ -326,7 +334,7 @@ export class Visual implements IVisual {
                     .attr('fill',actualColor)
                     .attr('stroke', 'black')
                     .style('stroke-width', '0px')
-                    .style('opacity', 0.4);
+                    .style('opacity', 0.5);
                 outerr = innerr;
                 this.tooltipServiceWrapper.addTooltip(newcontainer.selectAll('*'),
                     (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => this.getTooltipData(tooltipEvent.data),
