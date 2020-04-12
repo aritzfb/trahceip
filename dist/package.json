@@ -1,0 +1,17 @@
+{
+    "version": "1.0.0",
+    "author": {"name":"Aritz Francoy Barreiro","email":"aritzfb@hotmail.com"},
+    "resources": [
+        {
+            "resourceId": "rId0",
+            "sourceType": 5,
+            "file": "resources/trahciep1F0E0A25631C4BF690FD682B8A208224.pbiviz.json"
+        }
+    ],
+    "visual": {"name":"trahciep","displayName":"trahciep","guid":"trahciep1F0E0A25631C4BF690FD682B8A208224","visualClassName":"Visual","version":"1.0.0","description":"Trahceip is a Pie Chart that allows positive and negative values","supportUrl":"http://www.aritzfb.com","gitHubUrl":"https://github.com/aritzfb/trahceip"},
+    "metadata": {
+        "pbivizjson": {
+            "resourceId": "rId0"
+        }
+    }  
+}

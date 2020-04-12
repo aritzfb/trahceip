@@ -5,21 +5,20 @@
         ,"guid":"trahciep1F0E0A25631C4BF690FD682B8A208224"
         ,"visualClassName":"Visual"
         ,"version":"1.0.0"
-        ,"description":""
-        ,"supportUrl":""
-        ,"gitHubUrl":""
+        ,"description":"Trahceip is a Pie Chart that allows positive and negative values"
+        ,"supportUrl":"http://www.aritzfb.com"
+        ,"gitHubUrl":"https://github.com/aritzfb/trahceip"
     }
     ,"apiVersion":"2.6.0"
     ,"author":{
-        "name":""
-        ,"email":""
+        "name":"Aritz Francoy Barreiro"
+        ,"email":"aritzfb@hotmail.com"
     }
     ,"assets":{
         "icon":"assets/icon.png"
     }
     ,"externalJS":[
-        "node_modules/lodash/lodash.min.js",
-        "externalJS/init.lodash.js"
+        
     ]
 
     ,"style":"style/visual.less"

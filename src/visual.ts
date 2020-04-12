@@ -79,6 +79,7 @@ export interface ItrahcEipData {
     //isPositive: boolean;
     negativeValue: number;
     negativeCategory: string;
+    negativeColor : string;
     selectionId : ISelectionId;
 
 }
@@ -125,7 +126,7 @@ export class Visual implements IVisual {
             extra = {
                 displayName: "Category: " + value.data.negativeCategory,
                 value: "Total value: " + value.data.negativeValue.toString(),
-                color:"white"
+                color: value.data.negativeColor
             }
             retorno.push(extra);
 
@@ -137,7 +138,7 @@ export class Visual implements IVisual {
             retorno.push(extra);
         } else {
             extra = {
-                displayName: "Segment estimated value",
+                displayName: "Segment    estimated value",
                 value: Math.abs(myValue*value.data.totalArcs/value.data.totalSegments).toFixed(2),
                 color:"white"
             }
@@ -220,6 +221,7 @@ export class Visual implements IVisual {
                         //, isPositive : true
                         , negativeValue : 0
                         , negativeCategory : ""
+                        , negativeColor : ""
                         , selectionId : this.selectionId
                     }
                     data.push(item);
@@ -234,6 +236,7 @@ export class Visual implements IVisual {
                         //, isPositive : false
                         , negativeValue : 0
                         , negativeCategory : ""
+                        , negativeColor: ""
                         , selectionId : this.selectionId
                     }
                     dataneg.push(item);
@@ -252,6 +255,25 @@ export class Visual implements IVisual {
 
         /** Now, we'll build the pie chart */
             console.log('Drawing chart...');
+
+            container
+                .selectAll('*')
+                .data(pie(data))
+                .enter()
+                .append('path')
+                    .attr('d', d3.arc<d3.PieArcDatum<ItrahcEipData>>()
+                        .innerRadius(0)
+                        .outerRadius(radius)
+                    )
+                    .attr('fill', (d) => d.data.color)
+                    .attr('stroke', 'black')
+                    .style('stroke-width', '0px')
+                    
+                    //.style('opacity', 0.7);
+            this.tooltipServiceWrapper.addTooltip(container.selectAll('*'),
+                    (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => this.getTooltipData(tooltipEvent.data),
+                    (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => tooltipEvent.data.selectionId
+                );
             
             //var totalvalpos = 9+20+30+8+12;
             let totalArea : number = Math.PI * Math.pow(radius,2);            
@@ -278,6 +300,7 @@ export class Visual implements IVisual {
                     //falseSerie[j].isPositive = false;
                     falseSerie[j].negativeCategory = actualCategory;
                     falseSerie[j].selectionId = actualItem.selectionId;
+                    falseSerie[j].negativeColor = actualColor;
                 };
     
                 let targetArea : number = -1*actualValue * areaPerUnit;
@@ -291,9 +314,6 @@ export class Visual implements IVisual {
                     .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
                 newcontainer
                 .selectAll('*')
-                //.select('#'+i.toString())
-                //.data(pie(data))
-                //.data(pie([falseItem]))
                 .data(pie(falseSerie))
                 .enter()
                 .append('path')
@@ -301,9 +321,9 @@ export class Visual implements IVisual {
                         .innerRadius(innerr)
                         .outerRadius(outerr)
                     )
-                    .attr('fill', (d) => d.data.color)
+                    //.attr('fill', (d) => d.data.color)
                     //.attr('fill', "white")
-                    //.attr('fill',actualColor)
+                    .attr('fill',actualColor)
                     .attr('stroke', 'black')
                     .style('stroke-width', '0px')
                     .style('opacity', 0.4);
@@ -330,7 +350,7 @@ export class Visual implements IVisual {
                     .style('opacity', 0.3);
             }
             
-
+/*
             container
                 .selectAll('*')
                 .data(pie(data))
@@ -349,6 +369,7 @@ export class Visual implements IVisual {
                     (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => this.getTooltipData(tooltipEvent.data),
                     (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => tooltipEvent.data.selectionId
                 );
+            */
 
             
 
