@@ -333,8 +333,8 @@ export class Visual implements IVisual {
                     //.attr('fill', "white")
                     .attr('fill',actualColor)
                     .attr('stroke', 'black')
-                    .style('stroke-width', '0px')
-                    .style('opacity', 0.5);
+                    .style('stroke-width', '1px')
+                    .style('opacity', 1);
                 outerr = innerr;
                 this.tooltipServiceWrapper.addTooltip(newcontainer.selectAll('*'),
                     (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => this.getTooltipData(tooltipEvent.data),

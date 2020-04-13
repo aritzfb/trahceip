@@ -10,7 +10,11 @@
             "name": "measure",
             "kind": "Measure"
         }
-    ],
+    ]
+    ,
+    "sorting": {
+        "default":{}
+    },
     "objects": {
         "dataPoint": {
             "displayName": "Data colors",
