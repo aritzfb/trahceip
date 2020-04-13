@@ -76,7 +76,8 @@ export interface ItrahcEipData {
     color: string;
     totalSegments: number;
     totalArcs: number;
-    //isPositive: boolean;
+    isPositive: boolean;
+    sumIsPositive : boolean;
     negativeValue: number;
     negativeCategory: string;
     negativeColor : string;
@@ -116,46 +117,87 @@ export class Visual implements IVisual {
 
    private getTooltipData(value: any): VisualTooltipDataItem[] {
         //let language = getLocalizedString(this.locale, "LanguageKey");
-        debugger;
+        //debugger;
         var myValue = value.value;
         var myCategory = value.data.category;
-        var absolute = Math.abs(value.value*value.data.totalSegments/value.data.totalArcs).toFixed(2)+"%";
+        //var absolute = Math.abs(value.value*value.data.totalSegments/value.data.totalArcs).toFixed(2)+"%";
         var extra={};
         var retorno = [];
-        if (value.data.negativeValue<0) {
-            var arcValue = value.data.negativeValue*(value.value/value.data.totalSegments);
-            var arcValuePerc = 100*Math.abs(arcValue/value.data.totalSegments);
-            extra = {
-                displayName: "Residual value: ",
-                value: "Value: " + (arcValue).toFixed(2) + ". (" + arcValuePerc.toFixed(2) + "% of total pie)",
-                color:"black"
-            }
-            retorno.push(extra);
-            extra = {
-                displayName: "Category: " + value.data.negativeCategory,
-                value: "Value: " + value.data.negativeValue.toString() + ". (" + (100*Math.abs(value.data.negativeValue/value.data.totalArcs)).toFixed(2) + "% of negatives values)",
-                color: value.data.negativeColor
-            }
-            retorno.push(extra);
+        if (value.data.sumIsPositive){
+            //if (value.data.negativeValue<0) {
+            if (!value.data.isPositive) {
+                var arcValue = value.data.negativeValue*(value.value/value.data.totalSegments);
+                var arcValuePerc = 100*Math.abs(arcValue/value.data.totalSegments);
+                extra = {
+                    displayName: "Residual value: ",
+                    value: "Value: " + (arcValue).toFixed(2) + ". (" + arcValuePerc.toFixed(2) + "% of total pie)",
+                    color:"black"
+                }
+                retorno.push(extra);
+                extra = {
+                    displayName: "Category: " + value.data.negativeCategory,
+                    value: "Value: " + value.data.negativeValue.toString() + ". (" + (100*Math.abs(value.data.negativeValue/value.data.totalArcs)).toFixed(2) + "% of negatives values)",
+                    color: value.data.negativeColor
+                }
+                retorno.push(extra);
 
-            
+                
+            } else {
+                var segmentValue = Math.abs(myValue*value.data.totalArcs/value.data.totalSegments);
+                var segmentValuePerc = 100*segmentValue/value.data.totalSegments;
+                extra = {
+                    displayName: "Residual value:",
+                    value: "Value: " + segmentValue.toFixed(2) + ". (" + segmentValuePerc.toFixed(2) + "% of total pie)",
+                    color:"white"
+                }
+                retorno.push(extra);
+
+                retorno.push({
+                    displayName: "Category: " + myCategory,
+                    value: "Value: " + myValue.toString() + ". (" + (100*myValue/value.data.totalSegments).toFixed(2) + "% of positives values)",
+                    //total: value.data.totalSegments.value.toString(),
+                    color: value.data.color
+                    //,header: language && "displayed language " + language
+                });
+            }
         } else {
-            var segmentValue = Math.abs(myValue*value.data.totalArcs/value.data.totalSegments);
-            var segmentValuePerc = 100*segmentValue/value.data.totalSegments;
-            extra = {
-                displayName: "Residual value:",
-                value: "Value: " + segmentValue.toFixed(2) + ". (" + segmentValuePerc.toFixed(2) + "% of total pie)",
-                color:"white"
-            }
-            retorno.push(extra);
+            //sum is negative
+            if (!value.data.isPositive) {
+                var myvalue = Math.abs(value.data.negativeValue)
+                var arcValue = Math.abs(myvalue*(value.value/value.data.totalArcs));
+                var arcValuePerc = 100*Math.abs(arcValue/value.data.totalArcs);
+                extra = {
+                    displayName: "Residual value: ",
+                    value: "Value: " + (arcValue).toFixed(2) + ". (" + arcValuePerc.toFixed(2) + "% of total pie)",
+                    color:"black"
+                }
+                retorno.push(extra);
+                extra = {
+                    displayName: "Category: " + value.data.negativeCategory,
+                    value: "Value: " + myvalue.toString() + ". (" + (100*Math.abs(value.data.negativeValue/value.data.totalSegments)).toFixed(2) + "% of positives values)",
+                    color: value.data.negativeColor
+                }
+                retorno.push(extra);
 
-            retorno.push({
-                displayName: "Category: " + myCategory,
-                value: "Value: " + myValue.toString() + ". (" + (100*myValue/value.data.totalSegments).toFixed(2) + "% of positives)",
-                //total: value.data.totalSegments.value.toString(),
-                color: value.data.color
-                //,header: language && "displayed language " + language
-            });
+                
+            } else {
+                var segmentValue = Math.abs(myValue*value.data.totalSegments/value.data.totalArcs);
+                var segmentValuePerc = Math.abs(100*segmentValue/value.data.totalArcs);
+                extra = {
+                    displayName: "Residual value:",
+                    value: "Value: " + (-1*segmentValue).toFixed(2) + ". (" + segmentValuePerc.toFixed(2) + "% of total pie)",
+                    color:"white"
+                }
+                retorno.push(extra);
+
+                retorno.push({
+                    displayName: "Category: " + myCategory,
+                    value: "Value: " + (-1*myValue).toString() + ". (" + Math.abs(100*myValue/value.data.totalArcs).toFixed(2) + "% of negatives values)",
+                    //total: value.data.totalSegments.value.toString(),
+                    color: value.data.color
+                    //,header: language && "displayed language " + language
+                });
+            }
         }
         
         
@@ -214,39 +256,46 @@ export class Visual implements IVisual {
                     totalvalneg += Number.parseFloat( options.dataViews[0].categorical.values[0].values[i].toString());
                 
             }
+            let sumIsPositive : boolean = true;
+            if (Math.abs(totalvalneg)>totalvalpos) sumIsPositive = false;
             for(var i = 0;i<options.dataViews[0].categorical.categories[0].values.length;i++){
                 this.selectionId = this.myhost.createSelectionIdBuilder().withCategory(options.dataViews[0].categorical.categories[0],i).createSelectionId();   
-                    
-                if (options.dataViews[0].categorical.values[0].values[i].valueOf()>0) {
+                var itemValue =  Number.parseFloat( options.dataViews[0].categorical.values[0].values[i].toString()); 
+                if (!sumIsPositive) itemValue = -1*itemValue;
+                //if (options.dataViews[0].categorical.values[0].values[i].valueOf()>0) {
+                if(itemValue>0){
                     //this.selectionId.with
                     var item = {
                         category : options.dataViews[0].categorical.categories[0].values[i].toString()
-                        , value : Number.parseFloat( options.dataViews[0].categorical.values[0].values[i].toString())
+                        , value : itemValue
                         , color : this.colorPalette.getColor(options.dataViews[0].categorical.categories[0].values[i].toString()).value
                         , totalSegments : totalvalpos
                         , totalArcs : totalvalneg
-                        //, isPositive : true
+                        , isPositive : true
+                        , sumIsPositive : sumIsPositive
                         , negativeValue : 0
                         , negativeCategory : ""
                         , negativeColor : ""
                         , selectionId : this.selectionId
                     }
                     data.push(item);
-                    //totalvalpos += Number.parseFloat( options.dataViews[0].categorical.values[0].values[i].toString());
+                                        
                 } else {
                     var item = {
                         category : options.dataViews[0].categorical.categories[0].values[i].toString()
-                        , value : Number.parseFloat( options.dataViews[0].categorical.values[0].values[i].toString())
+                        , value : itemValue
                         , color : this.colorPalette.getColor(options.dataViews[0].categorical.categories[0].values[i].toString()).value
                         , totalSegments : totalvalpos
                         , totalArcs : totalvalneg
-                        //, isPositive : false
+                        , isPositive : false
+                        , sumIsPositive : sumIsPositive
                         , negativeValue : 0
                         , negativeCategory : ""
                         , negativeColor: ""
                         , selectionId : this.selectionId
                     }
                     dataneg.push(item);
+                    
                 }
             }
         
@@ -262,7 +311,7 @@ export class Visual implements IVisual {
 
         /** Now, we'll build the pie chart */
             console.log('Drawing chart...');
-
+                //debugger;
             container
                 .selectAll('*')
                 .data(pie(data))
@@ -285,13 +334,14 @@ export class Visual implements IVisual {
             //var totalvalpos = 9+20+30+8+12;
             let totalArea : number = Math.PI * Math.pow(radius,2);            
             let areaPerUnit : number = totalArea / totalvalpos ;
+            if (!sumIsPositive) areaPerUnit = Math.abs(totalArea/totalvalneg);
             let stepByUnit :number = 1 / totalvalpos;
             let valueacum : number = 0
             let innerr : number = radius; 
             let outerr : number =radius;
             //var copyData = data;
             for(let i:number=0; i<dataneg.length; i++){
-                debugger;
+                //debugger;
                 var actualItem = dataneg[i];
                 var actualValue = actualItem.value;
                 var actualColor = actualItem.color;
@@ -309,9 +359,12 @@ export class Visual implements IVisual {
                     falseSerie[j].selectionId = actualItem.selectionId;
                     falseSerie[j].negativeColor = actualColor;
                     falseSerie[j].totalArcs = actualItem.totalArcs;
+                    falseSerie[j].isPositive = actualItem.isPositive;
+                    //falseSerie[j].value = Math.abs(falseSerie[j].value);
                 };
     
-                let targetArea : number = -1*actualValue * areaPerUnit;
+                //let targetArea : number = -1*actualValue * areaPerUnit;
+                let targetArea : number = Math.abs(actualValue * areaPerUnit);
                 //por area
                 innerr = Math.sqrt( Math.pow(outerr,2) - (targetArea/Math.PI) );
                 

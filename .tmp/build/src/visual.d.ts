@@ -16,6 +16,8 @@ export interface ItrahcEipData {
     color: string;
     totalSegments: number;
     totalArcs: number;
+    isPositive: boolean;
+    sumIsPositive: boolean;
     negativeValue: number;
     negativeCategory: string;
     negativeColor: string;
