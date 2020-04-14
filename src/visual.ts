@@ -66,7 +66,7 @@ import { createTooltipServiceWrapper, TooltipEventArgs, ITooltipServiceWrapper }
 
 import { VisualSettings } from "./settings";
 
-
+import { valueFormatter } from "powerbi-visuals-utils-formattingutils";
 
 
 
@@ -118,6 +118,10 @@ export class Visual implements IVisual {
    private getTooltipData(value: any): VisualTooltipDataItem[] {
         //let language = getLocalizedString(this.locale, "LanguageKey");
         //debugger;
+        //_this.options.host.locale;
+        let percentFormat = valueFormatter.create({ format: "0.00 %;-0.00 %;0.00 %" , cultureSelector:this.myhost.locale});
+        //let numberFormat = valueFormatter.create({ format: "#,0.00" , cultureSelector:"es-US"});
+        let numberFormat = valueFormatter.create({ format: "#,0.00" , cultureSelector:this.myhost.locale});
         var myValue = value.value;
         var myCategory = value.data.category;
         //var absolute = Math.abs(value.value*value.data.totalSegments/value.data.totalArcs).toFixed(2)+"%";
@@ -127,16 +131,16 @@ export class Visual implements IVisual {
             //if (value.data.negativeValue<0) {
             if (!value.data.isPositive) {
                 var arcValue = value.data.negativeValue*(value.value/value.data.totalSegments);
-                var arcValuePerc = 100*Math.abs(arcValue/value.data.totalSegments);
+                var arcValuePerc = Math.abs(arcValue/value.data.totalSegments);
                 extra = {
                     displayName: "Residual value: ",
-                    value: "Value: " + (arcValue).toFixed(2) + ". (" + arcValuePerc.toFixed(2) + "% of total pie)",
+                    value: "Value: " + numberFormat.format(arcValue) + " (" + percentFormat.format(arcValuePerc) + " of total pie)",
                     color:"black"
                 }
                 retorno.push(extra);
                 extra = {
                     displayName: "Category: " + value.data.negativeCategory,
-                    value: "Value: " + value.data.negativeValue.toString() + ". (" + (100*Math.abs(value.data.negativeValue/value.data.totalArcs)).toFixed(2) + "% of negatives values)",
+                    value: "Value: " + numberFormat.format(value.data.negativeValue) + " (" + percentFormat.format(Math.abs(value.data.negativeValue/value.data.totalArcs)) + " of negatives values)",
                     color: value.data.negativeColor
                 }
                 retorno.push(extra);
@@ -144,17 +148,17 @@ export class Visual implements IVisual {
                 
             } else {
                 var segmentValue = Math.abs(myValue*value.data.totalArcs/value.data.totalSegments);
-                var segmentValuePerc = 100*segmentValue/value.data.totalSegments;
+                var segmentValuePerc = segmentValue/value.data.totalSegments;
                 extra = {
                     displayName: "Residual value:",
-                    value: "Value: " + segmentValue.toFixed(2) + ". (" + segmentValuePerc.toFixed(2) + "% of total pie)",
+                    value: "Value: " + numberFormat.format(segmentValue) + " (" + percentFormat.format(segmentValuePerc) + " of total pie)",
                     color:"white"
                 }
                 retorno.push(extra);
 
                 retorno.push({
                     displayName: "Category: " + myCategory,
-                    value: "Value: " + myValue.toString() + ". (" + (100*myValue/value.data.totalSegments).toFixed(2) + "% of positives values)",
+                    value: "Value: " + numberFormat.format(myValue) + " (" + percentFormat.format(myValue/value.data.totalSegments) + " of positives values)",
                     //total: value.data.totalSegments.value.toString(),
                     color: value.data.color
                     //,header: language && "displayed language " + language
@@ -165,16 +169,16 @@ export class Visual implements IVisual {
             if (!value.data.isPositive) {
                 var myvalue = Math.abs(value.data.negativeValue)
                 var arcValue = Math.abs(myvalue*(value.value/value.data.totalArcs));
-                var arcValuePerc = 100*Math.abs(arcValue/value.data.totalArcs);
+                var arcValuePerc = Math.abs(arcValue/value.data.totalArcs);
                 extra = {
                     displayName: "Residual value: ",
-                    value: "Value: " + (arcValue).toFixed(2) + ". (" + arcValuePerc.toFixed(2) + "% of total pie)",
+                    value: "Value: " + numberFormat.format(arcValue) + " (" + percentFormat.format(arcValuePerc) + " of total pie)",
                     color:"black"
                 }
                 retorno.push(extra);
                 extra = {
                     displayName: "Category: " + value.data.negativeCategory,
-                    value: "Value: " + myvalue.toString() + ". (" + (100*Math.abs(value.data.negativeValue/value.data.totalSegments)).toFixed(2) + "% of positives values)",
+                    value: "Value: " + numberFormat.format(myvalue) + " (" + percentFormat.format(Math.abs(value.data.negativeValue/value.data.totalSegments)) + " of positives values)",
                     color: value.data.negativeColor
                 }
                 retorno.push(extra);
@@ -182,17 +186,17 @@ export class Visual implements IVisual {
                 
             } else {
                 var segmentValue = Math.abs(myValue*value.data.totalSegments/value.data.totalArcs);
-                var segmentValuePerc = Math.abs(100*segmentValue/value.data.totalArcs);
+                var segmentValuePerc = Math.abs(segmentValue/value.data.totalArcs);
                 extra = {
                     displayName: "Residual value:",
-                    value: "Value: " + (-1*segmentValue).toFixed(2) + ". (" + segmentValuePerc.toFixed(2) + "% of total pie)",
+                    value: "Value: " + numberFormat.format(-1*segmentValue) + " (" + percentFormat.format(segmentValuePerc) + " of total pie)",
                     color:"white"
                 }
                 retorno.push(extra);
 
                 retorno.push({
                     displayName: "Category: " + myCategory,
-                    value: "Value: " + (-1*myValue).toString() + ". (" + Math.abs(100*myValue/value.data.totalArcs).toFixed(2) + "% of negatives values)",
+                    value: "Value: " + numberFormat.format(-1*myValue) + " (" + percentFormat.format(Math.abs(myValue/value.data.totalArcs)) + " of negatives values)",
                     //total: value.data.totalSegments.value.toString(),
                     color: value.data.color
                     //,header: language && "displayed language " + language
