@@ -16,6 +16,7 @@
     "sorting": {
         "default":{}
     },
+    "supportsLandingPage": true,
     "objects": {
         "dataPoint": {
             "displayName": "Data colors",

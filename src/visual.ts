@@ -98,15 +98,76 @@ export class Visual implements IVisual {
     private tooltipServiceWrapper: ITooltipServiceWrapper;
     private selectionId : ISelectionId;
     private myhost : IVisualHost;
+
+
+    private element: HTMLElement;
+    private isLandingPageOn: boolean;
+    private LandingPageRemoved: boolean;
+    private LandingPage: d3.Selection<any,any,any,any>;
+
+    private  createSampleLandingPage () : Element {
+        //let miLandingPage : Element;
+        //debugger;
+        let miNodo : HTMLDivElement;
+        try{
+            //miNodo = new HTMLDivElement();
+            //let miDoc : HTMLDocument;
+            miNodo = document.createElement("div");
+            //this.element.append(miNodo);
+            //miNodo.textContent="Visit http://www.aritzfb.com and donate to ";
+            let titulo : HTMLParagraphElement = document.createElement("p");
+            titulo.textContent = "Si a Sergio le sale del nabo hacerme un icono para este grafico, saldrá en el landing page.";
+            //let enlace : HTMLAnchorElement  = document.createElement("a");
+            //enlace.href="http://wwww.aritzfb.com";
+            //titulo;
+            //enlace.setAttribute('href',"http://www.aritzfb.com");
+            //enlace.setAttribute('target',"_blank");
+            //enlace.textContent="http://www.aritzfb.com";
+            
+            //let iframepay : HTMLIFrameElement = document.createElement("iframe");
+            //titulo.appendChild(enlace);
+            miNodo.appendChild(titulo);
+            //miNodo.TEXT_NODE;
+            miNodo.id="midividlandingpage"
+            //miLandingPage.appendChild(miNodo);
+            //return miLandingPage;
+        } catch (e){
+            debugger;
+        }
+        return miNodo;
+    } 
+
+    private HandleLandingPage(options: VisualUpdateOptions) {
+        //debugger;
+        if(!options || !options.dataViews || !options.dataViews.length) {
+            if(!this.isLandingPageOn) {
+                this.isLandingPageOn = true;
+                const SampleLandingPage: Element = this.createSampleLandingPage(); //create a landing page
+                this.element.appendChild(SampleLandingPage);
+                this.LandingPage = d3.select(SampleLandingPage);
+                //const miTexto : HTMLDivElement = new HTMLDivElement();
+                //miTexto.textContent="holi";
+                //this.element.appendChild(miTexto);
+            }
+ 
+        } else {
+                if(this.isLandingPageOn && !this.LandingPageRemoved){
+                    this.LandingPageRemoved = true;
+                    this.LandingPage.remove();
+                }
+            
+        }
+    }
+
     constructor(options: VisualConstructorOptions) {
         this.myhost = options.host;
         console.log('Visual constructor', options);
         this.colorPalette = options.host.colorPalette;
         //this.selectionManager = options.host.createSelectionManager();
-        
+        this.element = options.element;
         this.tooltipServiceWrapper = createTooltipServiceWrapper(options.host.tooltipService, options.element);
         
-        
+        this.HandleLandingPage(null);
         this.svg = d3
                 .select(options.element)
                 .append('svg')
@@ -149,18 +210,21 @@ export class Visual implements IVisual {
             } else {
                 var segmentValue = Math.abs(myValue*value.data.totalArcs/value.data.totalSegments);
                 var segmentValuePerc = segmentValue/value.data.totalSegments;
+                
                 extra = {
                     displayName: "Residual value:",
                     value: "Value: " + numberFormat.format(segmentValue) + " (" + percentFormat.format(segmentValuePerc) + " of total pie)",
                     color:"white"
                 }
                 retorno.push(extra);
-
+                
                 retorno.push({
                     displayName: "Category: " + myCategory,
                     value: "Value: " + numberFormat.format(myValue) + " (" + percentFormat.format(myValue/value.data.totalSegments) + " of positives values)",
                     //total: value.data.totalSegments.value.toString(),
+                    //total: "Total: " + numberFormat.format(segmentValue) + " (" + percentFormat.format(segmentValuePerc) + " of total pie)",
                     color: value.data.color
+                    //, header:"cabecera"
                     //,header: language && "displayed language " + language
                 });
             }
@@ -440,7 +504,10 @@ export class Visual implements IVisual {
 
         /** All finished  */
             console.log('Rendered!');
+
+        this.HandleLandingPage(options);
     }
+    
 
     private static parseSettings(dataView: DataView): VisualSettings {
         return <VisualSettings>VisualSettings.parse(dataView);
