@@ -32,6 +32,12 @@ export declare class Visual implements IVisual {
     private tooltipServiceWrapper;
     private selectionId;
     private myhost;
+    private element;
+    private isLandingPageOn;
+    private LandingPageRemoved;
+    private LandingPage;
+    private createSampleLandingPage;
+    private HandleLandingPage;
     constructor(options: VisualConstructorOptions);
     private getTooltipData;
     update(options: VisualUpdateOptions): void;

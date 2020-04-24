@@ -106,54 +106,38 @@ export class Visual implements IVisual {
     private LandingPage: d3.Selection<any,any,any,any>;
 
     private  createSampleLandingPage () : Element {
-        //let miLandingPage : Element;
-        //debugger;
         let miNodo : HTMLDivElement;
-        try{
-            //miNodo = new HTMLDivElement();
-            //let miDoc : HTMLDocument;
-            miNodo = document.createElement("div");
-            //this.element.append(miNodo);
-            //miNodo.textContent="Visit http://www.aritzfb.com and donate to ";
-            let titulo : HTMLParagraphElement = document.createElement("p");
-            titulo.textContent = "Si a Sergio le sale del nabo hacerme un icono para este grafico, saldrá en el landing page.";
-            //let enlace : HTMLAnchorElement  = document.createElement("a");
-            //enlace.href="http://wwww.aritzfb.com";
-            //titulo;
-            //enlace.setAttribute('href',"http://www.aritzfb.com");
-            //enlace.setAttribute('target',"_blank");
-            //enlace.textContent="http://www.aritzfb.com";
+        
+        miNodo = document.createElement("div");
+        let titulo : HTMLParagraphElement = document.createElement("p");
+        titulo.textContent = "Danding page test.";
+        miNodo.appendChild(titulo);
+        miNodo.id="midividlandingpage";
             
-            //let iframepay : HTMLIFrameElement = document.createElement("iframe");
-            //titulo.appendChild(enlace);
-            miNodo.appendChild(titulo);
-            //miNodo.TEXT_NODE;
-            miNodo.id="midividlandingpage"
-            //miLandingPage.appendChild(miNodo);
-            //return miLandingPage;
-        } catch (e){
-            debugger;
-        }
+        
         return miNodo;
     } 
 
     private HandleLandingPage(options: VisualUpdateOptions) {
-        //debugger;
         if(!options || !options.dataViews || !options.dataViews.length) {
             if(!this.isLandingPageOn) {
                 this.isLandingPageOn = true;
                 const SampleLandingPage: Element = this.createSampleLandingPage(); //create a landing page
                 this.element.appendChild(SampleLandingPage);
                 this.LandingPage = d3.select(SampleLandingPage);
-                //const miTexto : HTMLDivElement = new HTMLDivElement();
-                //miTexto.textContent="holi";
-                //this.element.appendChild(miTexto);
+                
+                //add again landing page?
+                //this.LandingPageRemoved = false;
+                
             }
  
         } else {
                 if(this.isLandingPageOn && !this.LandingPageRemoved){
-                    this.LandingPageRemoved = true;
+                    this.LandingPageRemoved = true;                    
                     this.LandingPage.remove();
+
+                    //add again landing page?
+                    //this.isLandingPageOn = false;
                 }
             
         }
@@ -178,7 +162,6 @@ export class Visual implements IVisual {
 
    private getTooltipData(value: any): VisualTooltipDataItem[] {
         //let language = getLocalizedString(this.locale, "LanguageKey");
-        //debugger;
         //_this.options.host.locale;
         let percentFormat = valueFormatter.create({ format: "0.00 %;-0.00 %;0.00 %" , cultureSelector:this.myhost.locale});
         //let numberFormat = valueFormatter.create({ format: "#,0.00" , cultureSelector:"es-US"});
@@ -274,7 +257,6 @@ export class Visual implements IVisual {
     }
 
     public update(options: VisualUpdateOptions) {
-        //debugger;
         
         //this.selectionId = this.myhost.createSelectionIdBuilder().withCategory("a",1).createSelectionId();   
         let dataView: DataView = options.dataViews[0];
@@ -285,24 +267,26 @@ export class Visual implements IVisual {
         console.log('Visual update', options);
   
         /** Clear the svg content, as it'll keep overwriting on every update otherwise */
-            console.log('Removing elements...');
-            this.svg.selectAll('*').remove();
+        console.log('Removing elements...');
+        this.svg.selectAll('*').remove();   
+        //this.tooltipServiceWrapper.hide();
+
 
         /** Resolve dimensions based on viewport */
-            console.log('Resolving dimensions...');
-            let width = options.viewport.width,
-                height = options.viewport.height,
-                radius = Math.min(width, height) / 2;
+        console.log('Resolving dimensions...');
+        let width = options.viewport.width,
+            height = options.viewport.height,
+            radius = Math.min(width, height) / 2;
       
         /** Apply width & height to main element, then add the group (g) element for the pie */
-            console.log('Setting and appending SVG elements...');
-            this.svg
-                .attr('width', width)
-                .attr('height', height);
-            
-            let container = this.svg
-                .append('g')
-                    .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
+        console.log('Setting and appending SVG elements...');
+        this.svg
+            .attr('width', width)
+            .attr('height', height);
+        
+        let container = this.svg
+            .append('g')
+                .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
 
         
             
@@ -310,62 +294,61 @@ export class Visual implements IVisual {
         /** We'll now assign the category/value/colour into this interface. Note that the data variable
          *  is specified as an array of our IData interface from above.
          */
-            console.log('Assigning data...');
-            //debugger;
-            let data: ItrahcEipData[] = [];
-            let dataneg: ItrahcEipData[] = [];
+        console.log('Assigning data...');
+        let data: ItrahcEipData[] = [];
+        let dataneg: ItrahcEipData[] = [];
+        
+        let totalvalpos : number = 0;
+        let totalvalneg : number = 0;
+        for(var i = 0;i<options.dataViews[0].categorical.categories[0].values.length;i++){
+            if (options.dataViews[0].categorical.values[0].values[i].valueOf()>0)
+                totalvalpos += Number.parseFloat( options.dataViews[0].categorical.values[0].values[i].toString());
+            else 
+                totalvalneg += Number.parseFloat( options.dataViews[0].categorical.values[0].values[i].toString());
             
-            let totalvalpos : number = 0;
-            let totalvalneg : number = 0;
-            for(var i = 0;i<options.dataViews[0].categorical.categories[0].values.length;i++){
-                if (options.dataViews[0].categorical.values[0].values[i].valueOf()>0)
-                    totalvalpos += Number.parseFloat( options.dataViews[0].categorical.values[0].values[i].toString());
-                else 
-                    totalvalneg += Number.parseFloat( options.dataViews[0].categorical.values[0].values[i].toString());
+        }
+        let sumIsPositive : boolean = true;
+        if (Math.abs(totalvalneg)>totalvalpos) sumIsPositive = false;
+        for(var i = 0;i<options.dataViews[0].categorical.categories[0].values.length;i++){
+            this.selectionId = this.myhost.createSelectionIdBuilder().withCategory(options.dataViews[0].categorical.categories[0],i).createSelectionId();   
+            var itemValue =  Number.parseFloat( options.dataViews[0].categorical.values[0].values[i].toString()); 
+            if (!sumIsPositive) itemValue = -1*itemValue;
+            //if (options.dataViews[0].categorical.values[0].values[i].valueOf()>0) {
+            if(itemValue>0){
+                //this.selectionId.with
+                var item = {
+                    category : options.dataViews[0].categorical.categories[0].values[i].toString()
+                    , value : itemValue
+                    , color : this.colorPalette.getColor(options.dataViews[0].categorical.categories[0].values[i].toString()).value
+                    , totalSegments : totalvalpos
+                    , totalArcs : totalvalneg
+                    , isPositive : true
+                    , sumIsPositive : sumIsPositive
+                    , negativeValue : 0
+                    , negativeCategory : ""
+                    , negativeColor : ""
+                    , selectionId : this.selectionId
+                }
+                data.push(item);
+                                    
+            } else {
+                var item = {
+                    category : options.dataViews[0].categorical.categories[0].values[i].toString()
+                    , value : itemValue
+                    , color : this.colorPalette.getColor(options.dataViews[0].categorical.categories[0].values[i].toString()).value
+                    , totalSegments : totalvalpos
+                    , totalArcs : totalvalneg
+                    , isPositive : false
+                    , sumIsPositive : sumIsPositive
+                    , negativeValue : 0
+                    , negativeCategory : ""
+                    , negativeColor: ""
+                    , selectionId : this.selectionId
+                }
+                dataneg.push(item);
                 
             }
-            let sumIsPositive : boolean = true;
-            if (Math.abs(totalvalneg)>totalvalpos) sumIsPositive = false;
-            for(var i = 0;i<options.dataViews[0].categorical.categories[0].values.length;i++){
-                this.selectionId = this.myhost.createSelectionIdBuilder().withCategory(options.dataViews[0].categorical.categories[0],i).createSelectionId();   
-                var itemValue =  Number.parseFloat( options.dataViews[0].categorical.values[0].values[i].toString()); 
-                if (!sumIsPositive) itemValue = -1*itemValue;
-                //if (options.dataViews[0].categorical.values[0].values[i].valueOf()>0) {
-                if(itemValue>0){
-                    //this.selectionId.with
-                    var item = {
-                        category : options.dataViews[0].categorical.categories[0].values[i].toString()
-                        , value : itemValue
-                        , color : this.colorPalette.getColor(options.dataViews[0].categorical.categories[0].values[i].toString()).value
-                        , totalSegments : totalvalpos
-                        , totalArcs : totalvalneg
-                        , isPositive : true
-                        , sumIsPositive : sumIsPositive
-                        , negativeValue : 0
-                        , negativeCategory : ""
-                        , negativeColor : ""
-                        , selectionId : this.selectionId
-                    }
-                    data.push(item);
-                                        
-                } else {
-                    var item = {
-                        category : options.dataViews[0].categorical.categories[0].values[i].toString()
-                        , value : itemValue
-                        , color : this.colorPalette.getColor(options.dataViews[0].categorical.categories[0].values[i].toString()).value
-                        , totalSegments : totalvalpos
-                        , totalArcs : totalvalneg
-                        , isPositive : false
-                        , sumIsPositive : sumIsPositive
-                        , negativeValue : 0
-                        , negativeCategory : ""
-                        , negativeColor: ""
-                        , selectionId : this.selectionId
-                    }
-                    dataneg.push(item);
-                    
-                }
-            }
+        }
         
             
 
@@ -373,137 +356,160 @@ export class Visual implements IVisual {
          *  so that we can access the properties correctly and TypeScript will validate our code if we get it
          *  wrong :)
          */
-            console.log('Creating pie function...');
-            let pie = d3.pie<ItrahcEipData>()
-                .value((d) => d.value);
+        console.log('Creating pie function...');
+        let pie = d3.pie<ItrahcEipData>()
+            .value((d) => d.value);
 
         /** Now, we'll build the pie chart */
-            console.log('Drawing chart...');
-                //debugger;
-            container
-                .selectAll('*')
-                .data(pie(data))
-                .enter()
-                .append('path')
-                    .attr('d', d3.arc<d3.PieArcDatum<ItrahcEipData>>()
-                        .innerRadius(0)
-                        .outerRadius(radius)
-                    )
-                    .attr('fill', (d) => d.data.color)
-                    .attr('stroke', 'black')
-                    .style('stroke-width', '0px')
-                    
-                    //.style('opacity', 0.7);
-            this.tooltipServiceWrapper.addTooltip(container.selectAll('*'),
-                    (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => this.getTooltipData(tooltipEvent.data),
-                    (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => tooltipEvent.data.selectionId
-                );
-            
-            //var totalvalpos = 9+20+30+8+12;
-            let totalArea : number = Math.PI * Math.pow(radius,2);            
-            let areaPerUnit : number = totalArea / totalvalpos ;
-            if (!sumIsPositive) areaPerUnit = Math.abs(totalArea/totalvalneg);
-            let stepByUnit :number = 1 / totalvalpos;
-            let valueacum : number = 0
-            let innerr : number = radius; 
-            let outerr : number =radius;
-            //var copyData = data;
-            for(let i:number=0; i<dataneg.length; i++){
-                //debugger;
-                var actualItem = dataneg[i];
-                var actualValue = actualItem.value;
-                var actualColor = actualItem.color;
-                var actualCategory = actualItem.category;
-
-                var falseItem = actualItem;
-                falseItem.value = -1*actualItem.value;
-
-                //let falseSerie : ItrahcEipData[] =  data;
-                var falseSerie = JSON.parse(JSON.stringify(data));
-                for(let j:number=0;j<falseSerie.length;j++){
-                    falseSerie[j].negativeValue = actualValue;
-                    //falseSerie[j].isPositive = false;
-                    falseSerie[j].negativeCategory = actualCategory;
-                    falseSerie[j].selectionId = actualItem.selectionId;
-                    falseSerie[j].negativeColor = actualColor;
-                    falseSerie[j].totalArcs = actualItem.totalArcs;
-                    falseSerie[j].isPositive = actualItem.isPositive;
-                    //falseSerie[j].value = Math.abs(falseSerie[j].value);
-                };
-    
-                //let targetArea : number = -1*actualValue * areaPerUnit;
-                let targetArea : number = Math.abs(actualValue * areaPerUnit);
-                //por area
-                innerr = Math.sqrt( Math.pow(outerr,2) - (targetArea/Math.PI) );
+        console.log('Drawing chart...');
+        
+        //segments to end of pie
+        /*
+        container
+            .selectAll('*')
+            .data(pie(data))
+            .enter()
+            .append('path')
+                .attr('d', d3.arc<d3.PieArcDatum<ItrahcEipData>>()
+                    .innerRadius(0)
+                    .outerRadius(radius)
+                )
+                .attr('fill', (d) => d.data.color)
+                .attr('stroke', 'black')
+                .style('stroke-width', '0px')
                 
-                //por radio
-                //innerr = outerr + actualValue*stepByUnit*radius;
-                let newcontainer = this.svg
-                .append('g')
-                    .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
-                newcontainer
-                .selectAll('*')
-                .data(pie(falseSerie))
-                .enter()
-                .append('path')
-                    .attr('d', d3.arc<d3.PieArcDatum<ItrahcEipData>>()
-                        .innerRadius(innerr)
-                        .outerRadius(outerr)
-                    )
-                    //.attr('fill', (d) => d.data.color)
-                    //.attr('fill', "white")
-                    .attr('fill',actualColor)
-                    .attr('stroke', 'black')
-                    .style('stroke-width', '1px')
-                    .style('opacity', 1);
-                outerr = innerr;
-                this.tooltipServiceWrapper.addTooltip(newcontainer.selectAll('*'),
-                    (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => this.getTooltipData(tooltipEvent.data),
-                    (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => tooltipEvent.data.selectionId
-                );
-                //last stroke
-            let bordercontainer = this.svg
+                //.style('opacity', 0.7);
+        this.tooltipServiceWrapper.addTooltip(container.selectAll('*'),
+                (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => this.getTooltipData(tooltipEvent.data),
+                (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => tooltipEvent.data.selectionId
+            );
+        */
+
+        //var totalvalpos = 9+20+30+8+12;
+        let totalArea : number = Math.PI * Math.pow(radius,2);            
+        let areaPerUnit : number = totalArea / totalvalpos ;
+        if (!sumIsPositive) areaPerUnit = Math.abs(totalArea/totalvalneg);
+        let stepByUnit :number = 1 / totalvalpos;
+        let valueacum : number = 0
+        let innerr : number = radius; 
+        let outerr : number =radius;
+        //var copyData = data;
+        for(let i:number=0; i<dataneg.length; i++){
+            var actualItem = dataneg[i];
+            var actualValue = actualItem.value;
+            var actualColor = actualItem.color;
+            var actualCategory = actualItem.category;
+
+            var falseItem = actualItem;
+            falseItem.value = -1*actualItem.value;
+
+            //let falseSerie : ItrahcEipData[] =  data;
+            var falseSerie = JSON.parse(JSON.stringify(data));
+            for(let j:number=0;j<falseSerie.length;j++){
+                falseSerie[j].negativeValue = actualValue;
+                //falseSerie[j].isPositive = false;
+                falseSerie[j].negativeCategory = actualCategory;
+                falseSerie[j].selectionId = actualItem.selectionId;
+                falseSerie[j].negativeColor = actualColor;
+                falseSerie[j].totalArcs = actualItem.totalArcs;
+                falseSerie[j].isPositive = actualItem.isPositive;
+                //falseSerie[j].value = Math.abs(falseSerie[j].value);
+            };
+
+            //let targetArea : number = -1*actualValue * areaPerUnit;
+            let targetArea : number = Math.abs(actualValue * areaPerUnit);
+            //por area
+            innerr = Math.sqrt( Math.pow(outerr,2) - (targetArea/Math.PI) );
+            
+            //por radio
+            //innerr = outerr + actualValue*stepByUnit*radius;
+            let newcontainer = this.svg
             .append('g')
                 .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
-            bordercontainer
-                .selectAll('*')
-                .data(pie(data))
-                .enter()
-                .append('path')
-                    .attr('d', d3.arc<d3.PieArcDatum<ItrahcEipData>>()
-                        .innerRadius(innerr)
-                        .outerRadius(innerr)
-                    )                    
-                    .attr('stroke', 'black')
-                    .style('stroke-width', '1px')
-                    .style('opacity', 0.3);
-            }
-            
-/*
-            container
-                .selectAll('*')
-                .data(pie(data))
-                .enter()
-                .append('path')
-                    .attr('d', d3.arc<d3.PieArcDatum<ItrahcEipData>>()
-                        .innerRadius(0)
-                        .outerRadius(innerr)
-                    )
-                    .attr('fill', (d) => d.data.color)
-                    .attr('stroke', 'black')
-                    .style('stroke-width', '0px')
-                    
-                    //.style('opacity', 0.7);
-            this.tooltipServiceWrapper.addTooltip(container.selectAll('*'),
-                    (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => this.getTooltipData(tooltipEvent.data),
-                    (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => tooltipEvent.data.selectionId
-                );
-            */
-
-            
-
+            newcontainer
+            .selectAll('*')
+            .data(pie(falseSerie))
+            .enter()
+            .append('path')
+                .attr('d', d3.arc<d3.PieArcDatum<ItrahcEipData>>()
+                    .innerRadius(innerr)
+                    .outerRadius(outerr)
+                )
+                //.attr('fill', (d) => d.data.color)
+                //.attr('fill', "white")
+                .attr('fill',actualColor)
+                .attr('stroke', 'black')
+                .style('stroke-width', '1px')
+                .style('opacity', 1);
+            outerr = innerr;
+            this.tooltipServiceWrapper.addTooltip(newcontainer.selectAll('*'),
+                (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => this.getTooltipData(tooltipEvent.data),
+                (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => tooltipEvent.data.selectionId
+            );
+            //last stroke
+        let bordercontainer = this.svg
+        .append('g')
+            .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
+        bordercontainer
+            .selectAll('*')
+            .data(pie(data))
+            .enter()
+            .append('path')
+                .attr('d', d3.arc<d3.PieArcDatum<ItrahcEipData>>()
+                    .innerRadius(innerr)
+                    .outerRadius(innerr)
+                )                    
+                .attr('stroke', 'black')
+                .style('stroke-width', '1px')
+                .style('opacity', 0.3);
+        }
+        
+        //segments to proportional arc
+        container
+            .selectAll('*')
+            .data(pie(data))
+            .enter()
+            .append('path')
+                .attr('d', d3.arc<d3.PieArcDatum<ItrahcEipData>>()
+                    .innerRadius(0)
+                    .outerRadius(innerr)
+                )
+                .attr('fill', (d) => d.data.color)
+                .attr('stroke', 'black')
+                .style('stroke-width', '0px')
+                
+                //.style('opacity', 0.7);
+        this.tooltipServiceWrapper.addTooltip(container.selectAll('*'),
+                (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => this.getTooltipData(tooltipEvent.data),
+                (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => tooltipEvent.data.selectionId
+            );
+        
+        
+        //text labels
+        debugger;
+        
+        this.svg
+            .selectAll('mySlices')
+            //.selectAll('*')
+            .data(pie(data))
+            .enter()
+            .append('text')
+            .text(function(d){ return d.data.category})
+            //.attr("transform", function(d) { return "translate(" + arcGenerator.centroid(d) + ")";  })
+            .attr("transform", function(d) { 
+                debugger;
+                let mywidth = width/2,myheight = height/2
+                    ,angulo = d.startAngle+(d.endAngle-d.startAngle-Math.PI)/2
+                    ,angulodegrees = angulo*180/Math.PI
+                    , myradius = innerr/2;
+                mywidth = mywidth + myradius*Math.cos(angulo);
+                myheight = myheight + myradius*Math.sin(angulo);
+                return "translate(" + mywidth + "," + myheight + ")rotate(" + angulodegrees + ")" ;
+            })
+            .style("text-anchor", "middle")
+            .style("font-size", "47px")
         /** All finished  */
-            console.log('Rendered!');
+        console.log('Rendered!');
 
         this.HandleLandingPage(options);
     }

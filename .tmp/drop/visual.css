@@ -1,10 +1,13 @@
 p {
-  font-size: 20px;
+  font-size: 50px;
   font-weight: bold;
 }
 p em {
   background: yellow;
   padding: 5px;
+}
+body.visual-sandbox {
+  cursor: initial;
 }
 
 
