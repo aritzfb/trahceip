@@ -8,21 +8,6 @@ import EnumerateVisualObjectInstancesOptions = powerbi.EnumerateVisualObjectInst
 import VisualObjectInstance = powerbi.VisualObjectInstance;
 import VisualObjectInstanceEnumerationObject = powerbi.VisualObjectInstanceEnumerationObject;
 import "./../style/visual.less";
-import powerbiVisualsApi from "powerbi-visuals-api";
-import ISelectionId = powerbiVisualsApi.visuals.ISelectionId;
-export interface ItrahcEipData {
-    category: string;
-    value: number;
-    color: string;
-    totalSegments: number;
-    totalArcs: number;
-    isPositive: boolean;
-    sumIsPositive: boolean;
-    negativeValue: number;
-    negativeCategory: string;
-    negativeColor: string;
-    selectionId: ISelectionId;
-}
 export declare class Visual implements IVisual {
     private target;
     private svg;
@@ -39,7 +24,6 @@ export declare class Visual implements IVisual {
     private createSampleLandingPage;
     private HandleLandingPage;
     constructor(options: VisualConstructorOptions);
-    private getTooltipData;
     update(options: VisualUpdateOptions): void;
     private static parseSettings;
     /**

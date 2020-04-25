@@ -18,6 +18,17 @@
     },
     "supportsLandingPage": true,
     "objects": {
+        "dataLabels": {
+            "displayName": "Trahceip Labels"
+            , "objectCategory": 1
+            , "properties": {
+                "show": {
+                    "type": {
+                        "bool": true
+                    }
+                }
+            }
+        },
         "dataPoint": {
             "displayName": "Data colors",
             "properties": {

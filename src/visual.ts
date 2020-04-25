@@ -58,8 +58,6 @@ import {
     touches as d3Touches,
     ContainerElement
 } from "d3-selection";
-import powerbiVisualsApi from "powerbi-visuals-api";
-import ISelectionId = powerbiVisualsApi.visuals.ISelectionId;
 import { createTooltipServiceWrapper, TooltipEventArgs, ITooltipServiceWrapper } from "powerbi-visuals-utils-tooltiputils";
 
 
@@ -68,7 +66,13 @@ import { VisualSettings } from "./settings";
 
 import { valueFormatter } from "powerbi-visuals-utils-formattingutils";
 
+import { ItrahcEipData }  from "./trahceip"
+import {ItrahcEipDataTooltip} from "./trahceip"
 
+import ISelectionId = powerbi.visuals.ISelectionId;
+/*
+import powerbiVisualsApi from "powerbi-visuals-api";
+import ISelectionId = powerbiVisualsApi.visuals.ISelectionId;
 
 export interface ItrahcEipData {
     category: string;
@@ -84,6 +88,7 @@ export interface ItrahcEipData {
     selectionId : ISelectionId;
 
 }
+*/
 const DefaultHandleTouchDelay = 1000;
 
 
@@ -159,7 +164,7 @@ export class Visual implements IVisual {
 
     }
     
-
+    /*
    private getTooltipData(value: any): VisualTooltipDataItem[] {
         //let language = getLocalizedString(this.locale, "LanguageKey");
         //_this.options.host.locale;
@@ -253,8 +258,10 @@ export class Visual implements IVisual {
         
         
         
+        
         return retorno;
     }
+    */
 
     public update(options: VisualUpdateOptions) {
         
@@ -316,7 +323,8 @@ export class Visual implements IVisual {
             //if (options.dataViews[0].categorical.values[0].values[i].valueOf()>0) {
             if(itemValue>0){
                 //this.selectionId.with
-                var item = {
+                //var segmentValue = Math.abs(myValue*value.data.totalArcs/value.data.totalSegments);
+                var item  = {
                     category : options.dataViews[0].categorical.categories[0].values[i].toString()
                     , value : itemValue
                     , color : this.colorPalette.getColor(options.dataViews[0].categorical.categories[0].values[i].toString()).value
@@ -328,6 +336,10 @@ export class Visual implements IVisual {
                     , negativeCategory : ""
                     , negativeColor : ""
                     , selectionId : this.selectionId
+
+                    , segmentValuePositive : Math.abs(itemValue*totalvalneg/totalvalpos)
+                    , segmentPercPositive:Math.abs(itemValue*totalvalneg/totalvalpos)/totalvalpos
+                    , arcValuePositive : 0
                 }
                 data.push(item);
                                     
@@ -344,6 +356,10 @@ export class Visual implements IVisual {
                     , negativeCategory : ""
                     , negativeColor: ""
                     , selectionId : this.selectionId
+
+                    , segmentValuePositive : 0
+                    , segmentPercPositive:0
+                    , arcValuePositive : 0
                 }
                 dataneg.push(item);
                 
@@ -442,8 +458,10 @@ export class Visual implements IVisual {
                 .style('stroke-width', '1px')
                 .style('opacity', 1);
             outerr = innerr;
+            let mytooltip : ItrahcEipData;
             this.tooltipServiceWrapper.addTooltip(newcontainer.selectAll('*'),
-                (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => this.getTooltipData(tooltipEvent.data),
+                //(tooltipEvent: TooltipEventArgs<ItrahcEipData>) => this.getTooltipData(tooltipEvent.data),
+                (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => ItrahcEipDataTooltip.getTooltipData(tooltipEvent.data),
                 (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => tooltipEvent.data.selectionId
             );
             //last stroke
@@ -480,7 +498,8 @@ export class Visual implements IVisual {
                 
                 //.style('opacity', 0.7);
         this.tooltipServiceWrapper.addTooltip(container.selectAll('*'),
-                (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => this.getTooltipData(tooltipEvent.data),
+                //(tooltipEvent: TooltipEventArgs<ItrahcEipData>) => this.getTooltipData(tooltipEvent.data),
+                (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => ItrahcEipDataTooltip.getTooltipData(tooltipEvent.data),
                 (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => tooltipEvent.data.selectionId
             );
         
@@ -488,7 +507,7 @@ export class Visual implements IVisual {
         //text labels
         debugger;
         
-        this.svg
+        let mylabels = this.svg
             .selectAll('mySlices')
             //.selectAll('*')
             .data(pie(data))
@@ -507,7 +526,12 @@ export class Visual implements IVisual {
                 return "translate(" + mywidth + "," + myheight + ")rotate(" + angulodegrees + ")" ;
             })
             .style("text-anchor", "middle")
-            .style("font-size", "47px")
+            .style("font-size", "47px");
+        this.tooltipServiceWrapper.addTooltip(mylabels,
+            //(tooltipEvent: TooltipEventArgs<ItrahcEipData>) => this.getTooltipData(tooltipEvent.data),
+            (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => ItrahcEipDataTooltip.getTooltipData(tooltipEvent.data),
+            (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => tooltipEvent.data.selectionId
+        );
         /** All finished  */
         console.log('Rendered!');
 
