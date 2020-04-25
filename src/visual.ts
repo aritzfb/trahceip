@@ -414,8 +414,8 @@ export class Visual implements IVisual {
             let mytooltip : ItrahcEipData;
             this.tooltipServiceWrapper.addTooltip(newcontainer.selectAll('*'),
                 //(tooltipEvent: TooltipEventArgs<ItrahcEipData>) => this.getTooltipData(tooltipEvent.data),
-                (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => ItrahcEipDataTooltip.getTooltipData(tooltipEvent.data),
-                (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => tooltipEvent.data.selectionId
+                (tooltipEvent: TooltipEventArgs<any>) => ItrahcEipDataTooltip.getTooltipData(tooltipEvent.data),
+                (tooltipEvent: TooltipEventArgs<any>) => tooltipEvent.data.data.selectionId
             );
             //last stroke
         let bordercontainer = this.svg
@@ -453,10 +453,15 @@ export class Visual implements IVisual {
         debugger;
         //this.sele
         //this.tooltipServiceWrapper.show();
-        
+        /*
         this.tooltipServiceWrapper.addTooltip(container.selectAll('*'),
             (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => ItrahcEipDataTooltip.getTooltipData(tooltipEvent.data),
             (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => tooltipEvent.data.selectionId
+        );
+        */
+        this.tooltipServiceWrapper.addTooltip(container.selectAll('*'),
+            (tooltipEvent: TooltipEventArgs<any>) => ItrahcEipDataTooltip.getTooltipData(tooltipEvent.data),
+            (tooltipEvent: TooltipEventArgs<any>) => tooltipEvent.data.data.selectionId
         );
         
         //this.tooltipServiceWrapper.show();
@@ -494,8 +499,8 @@ export class Visual implements IVisual {
                 .style("fill", this.visualSettings.dataLabels.fontColor);
             this.tooltipServiceWrapper.addTooltip(mylabels,
                 //(tooltipEvent: TooltipEventArgs<ItrahcEipData>) => this.getTooltipData(tooltipEvent.data),
-                (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => ItrahcEipDataTooltip.getTooltipData(tooltipEvent.data),
-                (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => tooltipEvent.data.selectionId
+                (tooltipEvent: TooltipEventArgs<any>) => ItrahcEipDataTooltip.getTooltipData(tooltipEvent.data),
+                (tooltipEvent: TooltipEventArgs<any>) => tooltipEvent.data.data.selectionId
             );
         }
         /** All finished  */

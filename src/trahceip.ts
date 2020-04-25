@@ -48,17 +48,22 @@ export class ItrahcEipDataTooltip {
                 //for negatives segments
                 //var arcValue = value.data.negativeValue*(value.value/value.data.totalSegments);
                 //var arcValuePerc = Math.abs(arcValue/value.data.totalSegments);
+                
                 extra = {
                     displayName: "Residual value: ",
                     //value: "Value: " + numberFormat.format(arcValue) + " (" + percentFormat.format(arcValuePerc) + " of total pie)",
                     value: "Value: " + numberFormat.format(value.data.arcValuePositive) + " (" + percentFormat.format(value.data.arcPercPositive) + " of total pie)",
                     color:"black"
+                    
                 }
+                
                 retorno.push(extra);
+                
                 extra = {
                     displayName: "Category: " + value.data.negativeCategory,
                     value: "Value: " + numberFormat.format(value.data.negativeValue) + " (" + percentFormat.format(Math.abs(value.data.negativeValue/value.data.totalArcs)) + " of negatives values)",
                     color: value.data.negativeColor
+                    ,selectionId:value.data.selectionId
                 }
                 retorno.push(extra);
     
@@ -85,7 +90,9 @@ export class ItrahcEipDataTooltip {
                     color: value.data.color
                     //, header:"cabecera"
                     //,header: language && "displayed language " + language
+                    ,selectionId:value.data.selectionId
                 });
+                
             }
         } else {
             //sum is negative
@@ -131,6 +138,7 @@ export class ItrahcEipDataTooltip {
             }
             
         }
+        //return [{selectionId:value.data.selectionId}];
         return retorno;
     }
 }
