@@ -6,6 +6,9 @@ export declare class VisualSettings extends DataViewObjectsParser {
 }
 export declare class dataLabelsSettings {
     show: boolean;
+    fontSize: number;
+    fontColor: string;
+    cracyLabels: boolean;
 }
 export declare class dataPointSettings {
     defaultColor: string;

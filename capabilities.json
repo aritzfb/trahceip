@@ -20,13 +20,38 @@
     "objects": {
         "dataLabels": {
             "displayName": "Trahceip Labels"
-            , "objectCategory": 1
+            
             , "properties": {
+                "fontSize":{
+                    "displayName": "Font size",
+                    "type": {
+                        "formatting": {
+                            "fontSize": true
+                        }
+                    }
+                }, 
+                "fontColor": {
+                    "displayName": "Font color",
+                    "type": {
+                        "fill": {
+                            "solid": {
+                                "color": true
+                            }
+                        }
+                    }
+                }, 
+                "cracyLabels": {
+                    "displayName": "Cracy labels",
+                    "type": {
+                        "bool": true
+                    }
+                }, 
                 "show": {
                     "type": {
                         "bool": true
                     }
                 }
+                
             }
         },
         "dataPoint": {

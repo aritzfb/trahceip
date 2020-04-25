@@ -115,7 +115,7 @@ export class Visual implements IVisual {
         
         miNodo = document.createElement("div");
         let titulo : HTMLParagraphElement = document.createElement("p");
-        titulo.textContent = "Danding page test.";
+        titulo.textContent = "Landing page test. Special thanks to Sergio Alvaro Panizo.";
         miNodo.appendChild(titulo);
         miNodo.id="midividlandingpage";
             
@@ -164,104 +164,7 @@ export class Visual implements IVisual {
 
     }
     
-    /*
-   private getTooltipData(value: any): VisualTooltipDataItem[] {
-        //let language = getLocalizedString(this.locale, "LanguageKey");
-        //_this.options.host.locale;
-        let percentFormat = valueFormatter.create({ format: "0.00 %;-0.00 %;0.00 %" , cultureSelector:this.myhost.locale});
-        //let numberFormat = valueFormatter.create({ format: "#,0.00" , cultureSelector:"es-US"});
-        let numberFormat = valueFormatter.create({ format: "#,0.00" , cultureSelector:this.myhost.locale});
-        var myValue = value.value;
-        var myCategory = value.data.category;
-        //var absolute = Math.abs(value.value*value.data.totalSegments/value.data.totalArcs).toFixed(2)+"%";
-        var extra={};
-        var retorno = [];
-        if (value.data.sumIsPositive){
-            //if (value.data.negativeValue<0) {
-            if (!value.data.isPositive) {
-                var arcValue = value.data.negativeValue*(value.value/value.data.totalSegments);
-                var arcValuePerc = Math.abs(arcValue/value.data.totalSegments);
-                extra = {
-                    displayName: "Residual value: ",
-                    value: "Value: " + numberFormat.format(arcValue) + " (" + percentFormat.format(arcValuePerc) + " of total pie)",
-                    color:"black"
-                }
-                retorno.push(extra);
-                extra = {
-                    displayName: "Category: " + value.data.negativeCategory,
-                    value: "Value: " + numberFormat.format(value.data.negativeValue) + " (" + percentFormat.format(Math.abs(value.data.negativeValue/value.data.totalArcs)) + " of negatives values)",
-                    color: value.data.negativeColor
-                }
-                retorno.push(extra);
-
-                
-            } else {
-                var segmentValue = Math.abs(myValue*value.data.totalArcs/value.data.totalSegments);
-                var segmentValuePerc = segmentValue/value.data.totalSegments;
-                
-                extra = {
-                    displayName: "Residual value:",
-                    value: "Value: " + numberFormat.format(segmentValue) + " (" + percentFormat.format(segmentValuePerc) + " of total pie)",
-                    color:"white"
-                }
-                retorno.push(extra);
-                
-                retorno.push({
-                    displayName: "Category: " + myCategory,
-                    value: "Value: " + numberFormat.format(myValue) + " (" + percentFormat.format(myValue/value.data.totalSegments) + " of positives values)",
-                    //total: value.data.totalSegments.value.toString(),
-                    //total: "Total: " + numberFormat.format(segmentValue) + " (" + percentFormat.format(segmentValuePerc) + " of total pie)",
-                    color: value.data.color
-                    //, header:"cabecera"
-                    //,header: language && "displayed language " + language
-                });
-            }
-        } else {
-            //sum is negative
-            if (!value.data.isPositive) {
-                var myvalue = Math.abs(value.data.negativeValue)
-                var arcValue = Math.abs(myvalue*(value.value/value.data.totalArcs));
-                var arcValuePerc = Math.abs(arcValue/value.data.totalArcs);
-                extra = {
-                    displayName: "Residual value: ",
-                    value: "Value: " + numberFormat.format(arcValue) + " (" + percentFormat.format(arcValuePerc) + " of total pie)",
-                    color:"black"
-                }
-                retorno.push(extra);
-                extra = {
-                    displayName: "Category: " + value.data.negativeCategory,
-                    value: "Value: " + numberFormat.format(myvalue) + " (" + percentFormat.format(Math.abs(value.data.negativeValue/value.data.totalSegments)) + " of positives values)",
-                    color: value.data.negativeColor
-                }
-                retorno.push(extra);
-
-                
-            } else {
-                var segmentValue = Math.abs(myValue*value.data.totalSegments/value.data.totalArcs);
-                var segmentValuePerc = Math.abs(segmentValue/value.data.totalArcs);
-                extra = {
-                    displayName: "Residual value:",
-                    value: "Value: " + numberFormat.format(-1*segmentValue) + " (" + percentFormat.format(segmentValuePerc) + " of total pie)",
-                    color:"white"
-                }
-                retorno.push(extra);
-
-                retorno.push({
-                    displayName: "Category: " + myCategory,
-                    value: "Value: " + numberFormat.format(-1*myValue) + " (" + percentFormat.format(Math.abs(myValue/value.data.totalArcs)) + " of negatives values)",
-                    //total: value.data.totalSegments.value.toString(),
-                    color: value.data.color
-                    //,header: language && "displayed language " + language
-                });
-            }
-        }
-        
-        
-        
-        
-        return retorno;
-    }
-    */
+    
 
     public update(options: VisualUpdateOptions) {
         
@@ -534,6 +437,8 @@ export class Visual implements IVisual {
         //text labels
         debugger;
         if (this.visualSettings.dataLabels.show){
+            let cracyLabels :boolean = this.visualSettings.dataLabels.cracyLabels;
+            
             let mylabels = this.svg
                 .selectAll('mySlices')
                 //.selectAll('*')
@@ -543,17 +448,21 @@ export class Visual implements IVisual {
                 .text(function(d){ return d.data.category})
                 //.attr("transform", function(d) { return "translate(" + arcGenerator.centroid(d) + ")";  })
                 .attr("transform", function(d) { 
-                    debugger;
+                    //debugger;
                     let mywidth = width/2,myheight = height/2
                         ,angulo = d.startAngle+(d.endAngle-d.startAngle-Math.PI)/2
                         ,angulodegrees = angulo*180/Math.PI
                         , myradius = innerr/2;
                     mywidth = mywidth + myradius*Math.cos(angulo);
                     myheight = myheight + myradius*Math.sin(angulo);
-                    return "translate(" + mywidth + "," + myheight + ")rotate(" + angulodegrees + ")" ;
+                    let retorno : string = "translate(" + mywidth + "," + myheight + ")";
+                    if(cracyLabels) retorno += "rotate(" + angulodegrees + ")";
+                    return retorno;
+                    //return "translate(" + mywidth + "," + myheight + ")rotate(" + angulodegrees + ")" ;
                 })
                 .style("text-anchor", "middle")
-                .style("font-size", "47px");
+                .style("font-size", this.visualSettings.dataLabels.fontSize.toString()+"pt")
+                .style("fill", this.visualSettings.dataLabels.fontColor);
             this.tooltipServiceWrapper.addTooltip(mylabels,
                 //(tooltipEvent: TooltipEventArgs<ItrahcEipData>) => this.getTooltipData(tooltipEvent.data),
                 (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => ItrahcEipDataTooltip.getTooltipData(tooltipEvent.data),
@@ -579,4 +488,103 @@ export class Visual implements IVisual {
     public enumerateObjectInstances(options: EnumerateVisualObjectInstancesOptions): VisualObjectInstance[] | VisualObjectInstanceEnumerationObject {
         return VisualSettings.enumerateObjectInstances(/*this.settings*/ this.visualSettings || VisualSettings.getDefault(), options);
     }
+
+    /*
+   private getTooltipData(value: any): VisualTooltipDataItem[] {
+        //let language = getLocalizedString(this.locale, "LanguageKey");
+        //_this.options.host.locale;
+        let percentFormat = valueFormatter.create({ format: "0.00 %;-0.00 %;0.00 %" , cultureSelector:this.myhost.locale});
+        //let numberFormat = valueFormatter.create({ format: "#,0.00" , cultureSelector:"es-US"});
+        let numberFormat = valueFormatter.create({ format: "#,0.00" , cultureSelector:this.myhost.locale});
+        var myValue = value.value;
+        var myCategory = value.data.category;
+        //var absolute = Math.abs(value.value*value.data.totalSegments/value.data.totalArcs).toFixed(2)+"%";
+        var extra={};
+        var retorno = [];
+        if (value.data.sumIsPositive){
+            //if (value.data.negativeValue<0) {
+            if (!value.data.isPositive) {
+                var arcValue = value.data.negativeValue*(value.value/value.data.totalSegments);
+                var arcValuePerc = Math.abs(arcValue/value.data.totalSegments);
+                extra = {
+                    displayName: "Residual value: ",
+                    value: "Value: " + numberFormat.format(arcValue) + " (" + percentFormat.format(arcValuePerc) + " of total pie)",
+                    color:"black"
+                }
+                retorno.push(extra);
+                extra = {
+                    displayName: "Category: " + value.data.negativeCategory,
+                    value: "Value: " + numberFormat.format(value.data.negativeValue) + " (" + percentFormat.format(Math.abs(value.data.negativeValue/value.data.totalArcs)) + " of negatives values)",
+                    color: value.data.negativeColor
+                }
+                retorno.push(extra);
+
+                
+            } else {
+                var segmentValue = Math.abs(myValue*value.data.totalArcs/value.data.totalSegments);
+                var segmentValuePerc = segmentValue/value.data.totalSegments;
+                
+                extra = {
+                    displayName: "Residual value:",
+                    value: "Value: " + numberFormat.format(segmentValue) + " (" + percentFormat.format(segmentValuePerc) + " of total pie)",
+                    color:"white"
+                }
+                retorno.push(extra);
+                
+                retorno.push({
+                    displayName: "Category: " + myCategory,
+                    value: "Value: " + numberFormat.format(myValue) + " (" + percentFormat.format(myValue/value.data.totalSegments) + " of positives values)",
+                    //total: value.data.totalSegments.value.toString(),
+                    //total: "Total: " + numberFormat.format(segmentValue) + " (" + percentFormat.format(segmentValuePerc) + " of total pie)",
+                    color: value.data.color
+                    //, header:"cabecera"
+                    //,header: language && "displayed language " + language
+                });
+            }
+        } else {
+            //sum is negative
+            if (!value.data.isPositive) {
+                var myvalue = Math.abs(value.data.negativeValue)
+                var arcValue = Math.abs(myvalue*(value.value/value.data.totalArcs));
+                var arcValuePerc = Math.abs(arcValue/value.data.totalArcs);
+                extra = {
+                    displayName: "Residual value: ",
+                    value: "Value: " + numberFormat.format(arcValue) + " (" + percentFormat.format(arcValuePerc) + " of total pie)",
+                    color:"black"
+                }
+                retorno.push(extra);
+                extra = {
+                    displayName: "Category: " + value.data.negativeCategory,
+                    value: "Value: " + numberFormat.format(myvalue) + " (" + percentFormat.format(Math.abs(value.data.negativeValue/value.data.totalSegments)) + " of positives values)",
+                    color: value.data.negativeColor
+                }
+                retorno.push(extra);
+
+                
+            } else {
+                var segmentValue = Math.abs(myValue*value.data.totalSegments/value.data.totalArcs);
+                var segmentValuePerc = Math.abs(segmentValue/value.data.totalArcs);
+                extra = {
+                    displayName: "Residual value:",
+                    value: "Value: " + numberFormat.format(-1*segmentValue) + " (" + percentFormat.format(segmentValuePerc) + " of total pie)",
+                    color:"white"
+                }
+                retorno.push(extra);
+
+                retorno.push({
+                    displayName: "Category: " + myCategory,
+                    value: "Value: " + numberFormat.format(-1*myValue) + " (" + percentFormat.format(Math.abs(myValue/value.data.totalArcs)) + " of negatives values)",
+                    //total: value.data.totalSegments.value.toString(),
+                    color: value.data.color
+                    //,header: language && "displayed language " + language
+                });
+            }
+        }
+        
+        
+        
+        
+        return retorno;
+    }
+    */
 }

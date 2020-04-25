@@ -38,6 +38,9 @@ export class VisualSettings extends DataViewObjectsParser {
 export class dataLabelsSettings {
 
   public show : boolean = true;
+  public fontSize : number = 20;
+  public fontColor: string = "000000";
+  public cracyLabels : boolean = false;
 }
 
 export class dataPointSettings {
