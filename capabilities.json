@@ -11,6 +11,12 @@
             "name": "measure",
             "kind": "Measure"
         }
+        ,
+        {
+            "displayName": "Tooltips",
+            "name": "Tooltips",
+            "kind": "Measure"
+        }
     ]
     ,
     "sorting": {
@@ -127,4 +133,14 @@
             }
         }
     ]
+    ,
+    "tooltips": {
+        "supportedTypes": {
+            "default": true,
+            "canvas": true
+        },
+        "roles": [
+            "Tooltips"
+        ]
+    }
 }

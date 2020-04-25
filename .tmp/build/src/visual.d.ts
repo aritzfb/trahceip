@@ -23,6 +23,7 @@ export declare class Visual implements IVisual {
     private LandingPage;
     private createSampleLandingPage;
     private HandleLandingPage;
+    private handleContextMenu;
     constructor(options: VisualConstructorOptions);
     update(options: VisualUpdateOptions): void;
     private static parseSettings;

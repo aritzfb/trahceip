@@ -41,7 +41,7 @@ import IVisualHost = powerbi.extensibility.visual.IVisualHost;
 import IColorPalette = powerbi.extensibility.IColorPalette; 
 import VisualObjectInstanceEnumeration = powerbi.VisualObjectInstanceEnumeration; 
 import Fill = powerbi.Fill; 
-import VisualTooltipDataItem = powerbi.extensibility.VisualTooltipDataItem; 
+//import VisualTooltipDataItem = powerbi.extensibility.VisualTooltipDataItem; 
 import ISelectionManager = powerbi.extensibility.ISelectionManager; 
 //import ISelectionId = powerbi.extensibility.ISelectionId;
 //import ITooltipServiceWrapper = powerbi.extensibility.ITooltipService;
@@ -91,7 +91,8 @@ export interface ItrahcEipData {
 */
 const DefaultHandleTouchDelay = 1000;
 
-
+//const getEvent = () => require("d3-selection").event; //d3Event
+//const getEvent = () => d3Event.event; //d3Event
 
 export class Visual implements IVisual {
     
@@ -101,6 +102,7 @@ export class Visual implements IVisual {
     private visualSettings: VisualSettings;
     private selectionManager : ISelectionManager;
     private tooltipServiceWrapper: ITooltipServiceWrapper;
+    //private myITooltipService : ITooltipService;
     private selectionId : ISelectionId;
     private myhost : IVisualHost;
 
@@ -148,19 +150,40 @@ export class Visual implements IVisual {
         }
     }
 
+
+    private handleContextMenu() {
+        this.svg.on('contextmenu', () => {
+            debugger;
+            this.tooltipServiceWrapper.hide();
+            //const mouseEvent: MouseEvent = getEvent();
+            const mouseEvent: MouseEvent = d3Event;
+            const eventTarget: EventTarget = mouseEvent.target;
+            //let dataPoint: any = d3Select(<d3.BaseType>eventTarget).datum();
+            let dataPoint: any = d3Select(<d3.BaseType>eventTarget).datum();
+            this.selectionManager.showContextMenu(dataPoint ? dataPoint.data.selectionId : {}, {
+                x: mouseEvent.clientX,
+                y: mouseEvent.clientY
+            });
+            mouseEvent.preventDefault();
+        });
+    }
+
     constructor(options: VisualConstructorOptions) {
         this.myhost = options.host;
         console.log('Visual constructor', options);
         this.colorPalette = options.host.colorPalette;
-        //this.selectionManager = options.host.createSelectionManager();
+        this.selectionManager = options.host.createSelectionManager();
         this.element = options.element;
         this.tooltipServiceWrapper = createTooltipServiceWrapper(options.host.tooltipService, options.element);
+       //this.tooltipServiceWrapper = createTooltipServiceWrapper()
         
+        //this.myITooltipService = createTooltipService(options.host.tooltipService, options.element);
         this.HandleLandingPage(null);
         this.svg = d3
                 .select(options.element)
                 .append('svg')
                 .classed('pieChart', true);
+        this.handleContextMenu();
 
     }
     
@@ -424,18 +447,24 @@ export class Visual implements IVisual {
                 )
                 .attr('fill', (d) => d.data.color)
                 .attr('stroke', 'black')
-                .style('stroke-width', '0px')
+                .style('stroke-width', '0px');
                 
-                //.style('opacity', 0.7);
+        //.style('opacity', 0.7);
+        debugger;
+        //this.sele
+        //this.tooltipServiceWrapper.show();
+        
         this.tooltipServiceWrapper.addTooltip(container.selectAll('*'),
-                //(tooltipEvent: TooltipEventArgs<ItrahcEipData>) => this.getTooltipData(tooltipEvent.data),
-                (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => ItrahcEipDataTooltip.getTooltipData(tooltipEvent.data),
-                (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => tooltipEvent.data.selectionId
-            );
+            (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => ItrahcEipDataTooltip.getTooltipData(tooltipEvent.data),
+            (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => tooltipEvent.data.selectionId
+        );
+        
+        //this.tooltipServiceWrapper.show();
+        
         
         
         //text labels
-        debugger;
+        //debugger;
         if (this.visualSettings.dataLabels.show){
             let cracyLabels :boolean = this.visualSettings.dataLabels.cracyLabels;
             
