@@ -324,6 +324,7 @@ export class Visual implements IVisual {
             if(itemValue>0){
                 //this.selectionId.with
                 //var segmentValue = Math.abs(myValue*value.data.totalArcs/value.data.totalSegments);
+                
                 var item  = {
                     category : options.dataViews[0].categorical.categories[0].values[i].toString()
                     , value : itemValue
@@ -340,10 +341,19 @@ export class Visual implements IVisual {
                     , segmentValuePositive : Math.abs(itemValue*totalvalneg/totalvalpos)
                     , segmentPercPositive:Math.abs(itemValue*totalvalneg/totalvalpos)/totalvalpos
                     , arcValuePositive : 0
+                    , arcPercPositive: 0
+
+                    , segmentValueNegative : itemValue*totalvalpos/totalvalneg
+                    //, segmentValueNegative : itemValue
+                    , segmentPercNegative : Math.abs(itemValue*totalvalpos/totalvalneg/totalvalneg)
+                    , arcValueNegative : 0
+                    , arcPercNegative : 0
                 }
                 data.push(item);
                                     
             } else {
+                //var segmentValue = Math.abs(myValue*value.data.totalSegments/value.data.totalArcs);
+                //var segmentValuePerc = Math.abs(segmentValue/value.data.totalArcs);
                 var item = {
                     category : options.dataViews[0].categorical.categories[0].values[i].toString()
                     , value : itemValue
@@ -360,6 +370,12 @@ export class Visual implements IVisual {
                     , segmentValuePositive : 0
                     , segmentPercPositive:0
                     , arcValuePositive : 0
+                    , arcPercPositive : 0
+
+                    , segmentValueNegative : 0
+                    , segmentPercNegative : 0
+                    , arcValueNegative : 0
+                    , arcPercNegative : 0
                 }
                 dataneg.push(item);
                 
@@ -429,7 +445,18 @@ export class Visual implements IVisual {
                 falseSerie[j].negativeColor = actualColor;
                 falseSerie[j].totalArcs = actualItem.totalArcs;
                 falseSerie[j].isPositive = actualItem.isPositive;
+                //var arcValue = value.data.negativeValue*(value.value/value.data.totalSegments);
+                //var arcValuePerc = Math.abs(arcValue/value.data.totalSegments);
+                falseSerie[j].arcValuePositive= actualValue*(actualItem.value/actualItem.totalSegments);
+                falseSerie[j].arcPercPositive=Math.abs(falseSerie[j].arcValuePositive/actualItem.totalSegments);
                 //falseSerie[j].value = Math.abs(falseSerie[j].value);
+                //arcValueNegative:number;
+                //arcPercNegative:number;
+                
+                //var arcValue = Math.abs(myvalue*(value.value/value.data.totalArcs));
+                //var arcValuePerc = Math.abs(arcValue/value.data.totalArcs);
+                falseSerie[j].arcValueNegative = Math.abs(actualValue*actualItem.value/actualItem.totalArcs);
+                falseSerie[j].arcPercNegative= Math.abs(falseSerie[j].arcValueNegative/actualItem.totalArcs);
             };
 
             //let targetArea : number = -1*actualValue * areaPerUnit;
@@ -506,32 +533,33 @@ export class Visual implements IVisual {
         
         //text labels
         debugger;
-        
-        let mylabels = this.svg
-            .selectAll('mySlices')
-            //.selectAll('*')
-            .data(pie(data))
-            .enter()
-            .append('text')
-            .text(function(d){ return d.data.category})
-            //.attr("transform", function(d) { return "translate(" + arcGenerator.centroid(d) + ")";  })
-            .attr("transform", function(d) { 
-                debugger;
-                let mywidth = width/2,myheight = height/2
-                    ,angulo = d.startAngle+(d.endAngle-d.startAngle-Math.PI)/2
-                    ,angulodegrees = angulo*180/Math.PI
-                    , myradius = innerr/2;
-                mywidth = mywidth + myradius*Math.cos(angulo);
-                myheight = myheight + myradius*Math.sin(angulo);
-                return "translate(" + mywidth + "," + myheight + ")rotate(" + angulodegrees + ")" ;
-            })
-            .style("text-anchor", "middle")
-            .style("font-size", "47px");
-        this.tooltipServiceWrapper.addTooltip(mylabels,
-            //(tooltipEvent: TooltipEventArgs<ItrahcEipData>) => this.getTooltipData(tooltipEvent.data),
-            (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => ItrahcEipDataTooltip.getTooltipData(tooltipEvent.data),
-            (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => tooltipEvent.data.selectionId
-        );
+        if (this.visualSettings.dataLabels.show){
+            let mylabels = this.svg
+                .selectAll('mySlices')
+                //.selectAll('*')
+                .data(pie(data))
+                .enter()
+                .append('text')
+                .text(function(d){ return d.data.category})
+                //.attr("transform", function(d) { return "translate(" + arcGenerator.centroid(d) + ")";  })
+                .attr("transform", function(d) { 
+                    debugger;
+                    let mywidth = width/2,myheight = height/2
+                        ,angulo = d.startAngle+(d.endAngle-d.startAngle-Math.PI)/2
+                        ,angulodegrees = angulo*180/Math.PI
+                        , myradius = innerr/2;
+                    mywidth = mywidth + myradius*Math.cos(angulo);
+                    myheight = myheight + myradius*Math.sin(angulo);
+                    return "translate(" + mywidth + "," + myheight + ")rotate(" + angulodegrees + ")" ;
+                })
+                .style("text-anchor", "middle")
+                .style("font-size", "47px");
+            this.tooltipServiceWrapper.addTooltip(mylabels,
+                //(tooltipEvent: TooltipEventArgs<ItrahcEipData>) => this.getTooltipData(tooltipEvent.data),
+                (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => ItrahcEipDataTooltip.getTooltipData(tooltipEvent.data),
+                (tooltipEvent: TooltipEventArgs<ItrahcEipData>) => tooltipEvent.data.selectionId
+            );
+        }
         /** All finished  */
         console.log('Rendered!');
 

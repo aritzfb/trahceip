@@ -13,9 +13,18 @@ export interface ItrahcEipData {
     negativeColor : string;
     selectionId : ISelectionId;
 
+    //when the total is positive
     segmentValuePositive :number;
     segmentPercPositive:number;
-    arcValuePositive : number;
+    arcValuePositive:number;
+    arcPercPositive:number;
+
+    //when the total is negative
+    segmentValueNegative :number;
+    segmentPercNegative:number;
+    arcValueNegative:number;
+    arcPercNegative:number;
+    
 
 }
 import VisualTooltipDataItem = powerbiVisualsApi.extensibility.VisualTooltipDataItem;
@@ -37,11 +46,12 @@ export class ItrahcEipDataTooltip {
             //if (value.data.negativeValue<0) {
             if (!value.data.isPositive) {
                 //for negatives segments
-                var arcValue = value.data.negativeValue*(value.value/value.data.totalSegments);
-                var arcValuePerc = Math.abs(arcValue/value.data.totalSegments);
+                //var arcValue = value.data.negativeValue*(value.value/value.data.totalSegments);
+                //var arcValuePerc = Math.abs(arcValue/value.data.totalSegments);
                 extra = {
                     displayName: "Residual value: ",
-                    value: "Value: " + numberFormat.format(arcValue) + " (" + percentFormat.format(arcValuePerc) + " of total pie)",
+                    //value: "Value: " + numberFormat.format(arcValue) + " (" + percentFormat.format(arcValuePerc) + " of total pie)",
+                    value: "Value: " + numberFormat.format(value.data.arcValuePositive) + " (" + percentFormat.format(value.data.arcPercPositive) + " of total pie)",
                     color:"black"
                 }
                 retorno.push(extra);
@@ -86,7 +96,8 @@ export class ItrahcEipDataTooltip {
                 var arcValuePerc = Math.abs(arcValue/value.data.totalArcs);
                 extra = {
                     displayName: "Residual value: ",
-                    value: "Value: " + numberFormat.format(arcValue) + " (" + percentFormat.format(arcValuePerc) + " of total pie)",
+                    //value: "Value: " + numberFormat.format(arcValue) + " (" + percentFormat.format(arcValuePerc) + " of total pie)",
+                    value: "Value: " + numberFormat.format(value.data.arcValueNegative) + " (" + percentFormat.format(value.data.arcPercNegative) + " of total pie)",
                     color:"black"
                 }
                 retorno.push(extra);
@@ -100,11 +111,12 @@ export class ItrahcEipDataTooltip {
                 
             } else {
                 //for negative arcs
-                var segmentValue = Math.abs(myValue*value.data.totalSegments/value.data.totalArcs);
-                var segmentValuePerc = Math.abs(segmentValue/value.data.totalArcs);
+                //var segmentValue = Math.abs(myValue*value.data.totalSegments/value.data.totalArcs);
+                //var segmentValuePerc = Math.abs(segmentValue/value.data.totalArcs);
                 extra = {
                     displayName: "Residual value:",
-                    value: "Value: " + numberFormat.format(-1*segmentValue) + " (" + percentFormat.format(segmentValuePerc) + " of total pie)",
+                    //value: "Value: " + numberFormat.format(-1*segmentValue) + " (" + percentFormat.format(segmentValuePerc) + " of total pie)",
+                    value: "Value: " + numberFormat.format(value.data.segmentValueNegative) + " (" + percentFormat.format(value.data.segmentPercNegative) + " of total pie)",
                     color:"white"
                 }
                 retorno.push(extra);

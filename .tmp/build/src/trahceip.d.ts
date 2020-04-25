@@ -15,6 +15,11 @@ export interface ItrahcEipData {
     segmentValuePositive: number;
     segmentPercPositive: number;
     arcValuePositive: number;
+    arcPercPositive: number;
+    segmentValueNegative: number;
+    segmentPercNegative: number;
+    arcValueNegative: number;
+    arcPercNegative: number;
 }
 import VisualTooltipDataItem = powerbiVisualsApi.extensibility.VisualTooltipDataItem;
 export declare class ItrahcEipDataTooltip {
