@@ -46,25 +46,72 @@ export class ItrahcEipDataTooltip {
             //if (value.data.negativeValue<0) {
             if (!value.data.isPositive) {
                 //for negatives segments
-                //var arcValue = value.data.negativeValue*(value.value/value.data.totalSegments);
-                //var arcValuePerc = Math.abs(arcValue/value.data.totalSegments);
+                extra = {
+                    //displayName: "Category: " + value.data.negativeCategory,
+                    displayName: value.data.negativeCategory,
+                    //value: numberFormat.format(value.data.negativeValue) + " (" + percentFormat.format(Math.abs(value.data.negativeValue/value.data.totalArcs)) + " of negatives values)",
+                    color: value.data.negativeColor
+                    ,selectionId:value.data.selectionId
+                }
+                retorno.push(extra);            
                 
                 extra = {
-                    displayName: "Residual value: ",
+                    //displayName: "Category: " + value.data.negativeCategory,
+                    displayName: "Value:",
+                    value: numberFormat.format(value.data.negativeValue) ,
+                    color: value.data.negativeColor
+                    ,selectionId:value.data.selectionId
+                }
+                retorno.push(extra);
+                /*
+                extra = {
+                    displayName: "% of Negatives: " ,
+                    value: percentFormat.format(Math.abs(value.data.negativeValue/value.data.totalArcs)),
+                    color: value.data.negativeColor
+                    ,selectionId:value.data.selectionId
+                }
+                retorno.push(extra);
+                */
+                extra = {
+                    //displayName: "Category: " + value.data.negativeCategory,
+                    displayName: "% of pie: " ,
+                    value: percentFormat.format(Math.abs(value.data.negativeValue/(value.data.totalSegments))),
+                    color: value.data.negativeColor
+                    ,selectionId:value.data.selectionId
+                }
+                retorno.push(extra);
+
+                extra = {
+                    displayName: "Over " + value.data.category ,
                     //value: "Value: " + numberFormat.format(arcValue) + " (" + percentFormat.format(arcValuePerc) + " of total pie)",
-                    value: "Value: " + numberFormat.format(value.data.arcValuePositive) + " (" + percentFormat.format(value.data.arcPercPositive) + " of total pie)",
-                    color:"black"
+                    //value: "Value: " + numberFormat.format(value.data.negativeValue-value.data.arcValuePositive) + " (" + percentFormat.format(value.data.arcPercPositive) + " of total pie)",
+                    //value: "Value: " + numberFormat.format(value.data.arcValuePositive) + " (" + percentFormat.format(value.data.arcPercPositive) + " of total pie)",
+                    color:value.data.color
                     
                 }
                 
                 retorno.push(extra);
-                
+
                 extra = {
-                    displayName: "Category: " + value.data.negativeCategory,
-                    value: "Value: " + numberFormat.format(value.data.negativeValue) + " (" + percentFormat.format(Math.abs(value.data.negativeValue/value.data.totalArcs)) + " of negatives values)",
-                    color: value.data.negativeColor
-                    ,selectionId:value.data.selectionId
+                    displayName: "Value: " ,
+                    //value: "Value: " + numberFormat.format(arcValue) + " (" + percentFormat.format(arcValuePerc) + " of total pie)",
+                    //value: "Value: " + numberFormat.format(value.data.negativeValue-value.data.arcValuePositive) + " (" + percentFormat.format(value.data.arcPercPositive) + " of total pie)",
+                    value: "Value: " + numberFormat.format(value.data.arcValuePositive) ,
+                    color:value.data.color
+                    
                 }
+                
+                retorno.push(extra);
+
+                extra = {
+                    displayName: "% of pie: " ,
+                    //value: "Value: " + numberFormat.format(arcValue) + " (" + percentFormat.format(arcValuePerc) + " of total pie)",
+                    //value: "Value: " + numberFormat.format(value.data.negativeValue-value.data.arcValuePositive) + " (" + percentFormat.format(value.data.arcPercPositive) + " of total pie)",
+                    value: percentFormat.format(value.data.arcPercPositive),
+                    color:value.data.color
+                    
+                }
+                
                 retorno.push(extra);
     
                 
@@ -74,16 +121,11 @@ export class ItrahcEipDataTooltip {
                 //var segmentValuePerc = segmentValue/value.data.totalSegments;
                 //var segmenValuePerc
                 
-                extra = {
-                    displayName: "Residual value:",
-                    //value: "Value: " + numberFormat.format(segmentValue) + " (" + percentFormat.format(segmentValuePerc) + " of total pie)",
-                    value: "Value: " + numberFormat.format(value.data.segmentValuePositive) + " (" + percentFormat.format(value.data.segmentPercPositive) + " of total pie)",
-                    color:"white"
-                }
-                retorno.push(extra);
+                
                 
                 retorno.push({
-                    displayName: "Category: " + myCategory,
+                    //displayName: "Category: " + myCategory,
+                    displayName: myCategory+ ":",
                     value: "Value: " + numberFormat.format(myValue) + " (" + percentFormat.format(myValue/value.data.totalSegments) + " of positives values)",
                     //total: value.data.totalSegments.value.toString(),
                     //total: "Total: " + numberFormat.format(segmentValue) + " (" + percentFormat.format(segmentValuePerc) + " of total pie)",
@@ -92,6 +134,15 @@ export class ItrahcEipDataTooltip {
                     //,header: language && "displayed language " + language
                     ,selectionId:value.data.selectionId
                 });
+
+                extra = {
+                    displayName: "Residual value:",
+                    //value: "Value: " + numberFormat.format(segmentValue) + " (" + percentFormat.format(segmentValuePerc) + " of total pie)",
+                    value: "Value: " + numberFormat.format(value.data.segmentValuePositive) + " (" + percentFormat.format(value.data.segmentPercPositive) + " of total pie)",
+                    //value: "Value: " + numberFormat.format(myValue-value.data.segmentValuePositive) + " (" + percentFormat.format((myValue-value.data.segmentValuePositive)/value.data.totalSegments) + " of total pie)",
+                    color:"white"
+                }
+                retorno.push(extra);
                 
             }
         } else {
@@ -101,17 +152,20 @@ export class ItrahcEipDataTooltip {
                 var myvalue = Math.abs(value.data.negativeValue)
                 var arcValue = Math.abs(myvalue*(value.value/value.data.totalArcs));
                 var arcValuePerc = Math.abs(arcValue/value.data.totalArcs);
+                
+                extra = {
+                    //displayName: "Category: " + value.data.negativeCategory,
+                    displayName: value.data.negativeCategory+ ":",
+                    value: "Value: " + numberFormat.format(myvalue) + " (" + percentFormat.format(Math.abs(value.data.negativeValue/value.data.totalSegments)) + " of positives values)",
+                    color: value.data.negativeColor
+                }
+                retorno.push(extra);
+
                 extra = {
                     displayName: "Residual value: ",
                     //value: "Value: " + numberFormat.format(arcValue) + " (" + percentFormat.format(arcValuePerc) + " of total pie)",
                     value: "Value: " + numberFormat.format(value.data.arcValueNegative) + " (" + percentFormat.format(value.data.arcPercNegative) + " of total pie)",
                     color:"black"
-                }
-                retorno.push(extra);
-                extra = {
-                    displayName: "Category: " + value.data.negativeCategory,
-                    value: "Value: " + numberFormat.format(myvalue) + " (" + percentFormat.format(Math.abs(value.data.negativeValue/value.data.totalSegments)) + " of positives values)",
-                    color: value.data.negativeColor
                 }
                 retorno.push(extra);
     
@@ -120,6 +174,17 @@ export class ItrahcEipDataTooltip {
                 //for negative arcs
                 //var segmentValue = Math.abs(myValue*value.data.totalSegments/value.data.totalArcs);
                 //var segmentValuePerc = Math.abs(segmentValue/value.data.totalArcs);
+                
+    
+                retorno.push({
+                    //displayName: "Category: " + myCategory,
+                    displayName: myCategory + ":",
+                    value: "Value: " + numberFormat.format(-1*myValue) + " (" + percentFormat.format(Math.abs(myValue/value.data.totalArcs)) + " of negatives values)",
+                    //total: value.data.totalSegments.value.toString(),
+                    color: value.data.color
+                    //,header: language && "displayed language " + language
+                });
+
                 extra = {
                     displayName: "Residual value:",
                     //value: "Value: " + numberFormat.format(-1*segmentValue) + " (" + percentFormat.format(segmentValuePerc) + " of total pie)",
@@ -127,14 +192,6 @@ export class ItrahcEipDataTooltip {
                     color:"white"
                 }
                 retorno.push(extra);
-    
-                retorno.push({
-                    displayName: "Category: " + myCategory,
-                    value: "Value: " + numberFormat.format(-1*myValue) + " (" + percentFormat.format(Math.abs(myValue/value.data.totalArcs)) + " of negatives values)",
-                    //total: value.data.totalSegments.value.toString(),
-                    color: value.data.color
-                    //,header: language && "displayed language " + language
-                });
             }
             
         }

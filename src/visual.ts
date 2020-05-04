@@ -264,14 +264,18 @@ export class Visual implements IVisual {
                     , negativeColor : ""
                     , selectionId : this.selectionId
 
-                    , segmentValuePositive : Math.abs(itemValue*totalvalneg/totalvalpos)
-                    , segmentPercPositive:Math.abs(itemValue*totalvalneg/totalvalpos)/totalvalpos
+                    //, segmentValuePositive : Math.abs(itemValue*totalvalneg/totalvalpos)
+                    , segmentValuePositive : Math.abs(itemValue+itemValue/totalvalpos*totalvalneg)
+                    , segmentPercPositive: Math.abs(itemValue+itemValue/totalvalpos*totalvalneg)/totalvalpos
                     , arcValuePositive : 0
                     , arcPercPositive: 0
 
-                    , segmentValueNegative : itemValue*totalvalpos/totalvalneg
+                    //, segmentValueNegative : itemValue*totalvalpos/totalvalneg
+                    //, segmentValueNegative : itemValue*totalvalpos
+                    , segmentValueNegative : -1*itemValue-itemValue/totalvalneg*totalvalpos
                     //, segmentValueNegative : itemValue
-                    , segmentPercNegative : Math.abs(itemValue*totalvalpos/totalvalneg/totalvalneg)
+                    //, segmentPercNegative : Math.abs(itemValue*totalvalpos/totalvalneg/totalvalneg)
+                    , segmentPercNegative : Math.abs((-1*itemValue-itemValue/totalvalneg*totalvalpos)/totalvalneg)
                     , arcValueNegative : 0
                     , arcPercNegative : 0
                 }
@@ -293,6 +297,7 @@ export class Visual implements IVisual {
                     , negativeColor: ""
                     , selectionId : this.selectionId
 
+                    
                     , segmentValuePositive : 0
                     , segmentPercPositive:0
                     , arcValuePositive : 0
@@ -302,6 +307,8 @@ export class Visual implements IVisual {
                     , segmentPercNegative : 0
                     , arcValueNegative : 0
                     , arcPercNegative : 0
+                    
+                   
                 }
                 dataneg.push(item);
                 
@@ -371,17 +378,15 @@ export class Visual implements IVisual {
                 falseSerie[j].negativeColor = actualColor;
                 falseSerie[j].totalArcs = actualItem.totalArcs;
                 falseSerie[j].isPositive = actualItem.isPositive;
-                //var arcValue = value.data.negativeValue*(value.value/value.data.totalSegments);
-                //var arcValuePerc = Math.abs(arcValue/value.data.totalSegments);
-                falseSerie[j].arcValuePositive= actualValue*(actualItem.value/actualItem.totalSegments);
-                falseSerie[j].arcPercPositive=Math.abs(falseSerie[j].arcValuePositive/actualItem.totalSegments);
-                //falseSerie[j].value = Math.abs(falseSerie[j].value);
-                //arcValueNegative:number;
-                //arcPercNegative:number;
                 
-                //var arcValue = Math.abs(myvalue*(value.value/value.data.totalArcs));
-                //var arcValuePerc = Math.abs(arcValue/value.data.totalArcs);
-                falseSerie[j].arcValueNegative = Math.abs(actualValue*actualItem.value/actualItem.totalArcs);
+                //falseSerie[j].arcValuePositive= actualValue*(actualItem.value/actualItem.totalSegments);
+                falseSerie[j].arcValuePositive= actualValue*falseSerie[j].value/actualItem.totalSegments;
+                //falseSerie[j].arcPercPositive=Math.abs(falseSerie[j].arcValuePositive/actualItem.totalSegments);
+                //falseSerie[j].arcPercPositive=Math.abs(actualValue*falseSerie[j].value/actualItem.totalSegments/actualItem.totalSegments);
+                falseSerie[j].arcPercPositive=Math.abs(falseSerie[j].arcValuePositive/actualItem.totalSegments);
+                
+                //falseSerie[j].arcValueNegative = Math.abs(actualValue*actualItem.value/actualItem.totalArcs);
+                falseSerie[j].arcValueNegative = Math.abs(actualValue*falseSerie[j].value/actualItem.totalArcs);
                 falseSerie[j].arcPercNegative= Math.abs(falseSerie[j].arcValueNegative/actualItem.totalArcs);
             };
 
