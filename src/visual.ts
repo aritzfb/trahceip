@@ -193,6 +193,7 @@ export class Visual implements IVisual {
         
         //this.selectionId = this.myhost.createSelectionIdBuilder().withCategory("a",1).createSelectionId();   
         let dataView: DataView = options.dataViews[0];
+        debugger;
         this.visualSettings = VisualSettings.parse<VisualSettings>(dataView);
         
         
@@ -414,7 +415,7 @@ export class Visual implements IVisual {
                 .attr('fill',actualColor)
                 .attr('stroke', 'black')
                 .style('stroke-width', '1px')
-                .style('opacity', 1);
+                .style('opacity', (this.visualSettings.dataColors.transparency/100));
             outerr = innerr;
             let mytooltip : ItrahcEipData;
             this.tooltipServiceWrapper.addTooltip(newcontainer.selectAll('*'),
@@ -525,6 +526,7 @@ export class Visual implements IVisual {
      *
      */
     public enumerateObjectInstances(options: EnumerateVisualObjectInstancesOptions): VisualObjectInstance[] | VisualObjectInstanceEnumerationObject {
+        //debugger;
         return VisualSettings.enumerateObjectInstances(/*this.settings*/ this.visualSettings || VisualSettings.getDefault(), options);
     }
 

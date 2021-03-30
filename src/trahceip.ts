@@ -31,6 +31,7 @@ import VisualTooltipDataItem = powerbiVisualsApi.extensibility.VisualTooltipData
 import { valueFormatter } from "powerbi-visuals-utils-formattingutils";
 export class ItrahcEipDataTooltip {
     public static getTooltipData(value: any): VisualTooltipDataItem[] {
+        debugger;
         //let language = getLocalizedString(this.locale, "LanguageKey");
         //_this.options.host.locale;
         //let percentFormat = valueFormatter.create({ format: "0.00 %;-0.00 %;0.00 %" , cultureSelector:this.myhost.locale});

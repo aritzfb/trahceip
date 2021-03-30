@@ -68,48 +68,14 @@
                 
             }
         },
-        "dataPoint": {
-            "displayName": "Data colors",
+        "dataColors": {
+            "displayName": "Traceip colors",
             "properties": {
-                "defaultColor": {
-                    "displayName": "Default color",
-                    "type": {
-                        "fill": {
-                            "solid": {
-                                "color": true
-                            }
-                        }
-                    }
-                },
-                "showAllDataPoints": {
-                    "displayName": "Show all",
-                    "type": {
-                        "bool": true
-                    }
-                },
-                "fill": {
-                    "displayName": "Fill",
-                    "type": {
-                        "fill": {
-                            "solid": {
-                                "color": true
-                            }
-                        }
-                    }
-                },
-                "fillRule": {
-                    "displayName": "Color saturation",
-                    "type": {
-                        "fill": {}
-                    }
-                },
-                 "fontSize": {
-                    "displayName": "Text Size",
-                    "type": {
-                        "formatting": {
-                            "fontSize": true
-                        }
-                    }
+                "transparency": {
+                    "displayName": "Arcs Transparency"
+                     ,"type": {
+                         "integer": true
+                     }                   
                 }
             }
         }
@@ -126,8 +92,11 @@
                         "in": "category"
                     },
                     "dataReductionAlgorithm": {
-                        "top": {}
+                        "top": {
+                            "count":100
+                        }
                     }
+                    
                 },
                 "values": {
                     "select": [

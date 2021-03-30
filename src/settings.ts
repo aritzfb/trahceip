@@ -28,11 +28,12 @@
 
 import { dataViewObjectsParser } from "powerbi-visuals-utils-dataviewutils";
 import DataViewObjectsParser = dataViewObjectsParser.DataViewObjectsParser;
+import { Numeric } from "d3";
 
 export class VisualSettings extends DataViewObjectsParser {
 
   public dataLabels : dataLabelsSettings = new dataLabelsSettings();  
-  public dataPoint: dataPointSettings = new dataPointSettings();
+  public dataColors: dataColorsSettings = new dataColorsSettings();
 }
 
 export class dataLabelsSettings {
@@ -42,17 +43,10 @@ export class dataLabelsSettings {
   public fontColor: string = "000000";
   public cracyLabels : boolean = false;
 }
+export class dataColorsSettings {
 
-export class dataPointSettings {
-  // Default color
-  public defaultColor: string = "";
-  // Show all
-  public showAllDataPoints: boolean = true;
-  // Fill
-  public fill: string = "";
-  // Color saturation
-  public fillRule: string = "";
-  // Text Size
-  public fontSize: number = 12;
+  public transparency : number = 50;
+
 }
+
 
