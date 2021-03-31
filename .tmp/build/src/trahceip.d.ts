@@ -1,5 +1,9 @@
 import powerbiVisualsApi from "powerbi-visuals-api";
 import ISelectionId = powerbiVisualsApi.visuals.ISelectionId;
+export interface ItrahcEipDataTooltip {
+    measureName: string;
+    measureValue: number;
+}
 export interface ItrahcEipData {
     category: string;
     value: number;
@@ -20,6 +24,7 @@ export interface ItrahcEipData {
     segmentPercNegative: number;
     arcValueNegative: number;
     arcPercNegative: number;
+    tooltips: ItrahcEipDataTooltip[];
 }
 import VisualTooltipDataItem = powerbiVisualsApi.extensibility.VisualTooltipDataItem;
 export declare class ItrahcEipDataTooltip {

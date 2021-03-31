@@ -1,5 +1,13 @@
 import powerbiVisualsApi from "powerbi-visuals-api";
 import ISelectionId = powerbiVisualsApi.visuals.ISelectionId;
+
+export interface ItrahcEipDataTooltip {
+    measureName : string;
+    measureValue : number;
+}
+
+
+
 export interface ItrahcEipData {
     category: string;
     value: number;
@@ -24,11 +32,13 @@ export interface ItrahcEipData {
     segmentPercNegative:number;
     arcValueNegative:number;
     arcPercNegative:number;
-    
+
+    tooltips : ItrahcEipDataTooltip[];
 
 }
 import VisualTooltipDataItem = powerbiVisualsApi.extensibility.VisualTooltipDataItem;
 import { valueFormatter } from "powerbi-visuals-utils-formattingutils";
+import { dataLabelsSettings } from "./settings";
 export class ItrahcEipDataTooltip {
     public static getTooltipData(value: any): VisualTooltipDataItem[] {
         debugger;
@@ -197,7 +207,19 @@ export class ItrahcEipDataTooltip {
             
         }
         //return [{selectionId:value.data.selectionId}];
+
+        //tooltips
+        debugger;
+        for(var i = 0; i < value.data.tooltips.length; i++){
+            var toolItem = {
+                displayName : value.data.tooltips[i].measureName,
+                value : "Value: " + numberFormat.format(value.data.tooltips[i].measureValue),
+                color : "black"
+            }
+            retorno.push(toolItem);
+        }
         return retorno;
+        //return null;
     }
 }
 

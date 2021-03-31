@@ -1,5 +1,5 @@
 /*
-*  Power BI Visual CLI
+*  Power BI Visual LI
 *
 *  Copyright (c) Microsoft Corporation
 *  All rights reserved.
@@ -247,10 +247,33 @@ export class Visual implements IVisual {
             this.selectionId = this.myhost.createSelectionIdBuilder().withCategory(options.dataViews[0].categorical.categories[0],i).createSelectionId();   
             var itemValue =  Number.parseFloat( options.dataViews[0].categorical.values[0].values[i].toString()); 
             if (!sumIsPositive) itemValue = -1*itemValue;
+            
             //if (options.dataViews[0].categorical.values[0].values[i].valueOf()>0) {
+            
+            let mylisttooltips : ItrahcEipDataTooltip[] = [];
+            for (var j= 1; j < options.dataViews[0].categorical.values.length; j++){
+                
+                var nombreMedida = "";
+                nombreMedida = options.dataViews[0].categorical.values[j].source.displayName.toString();
+                var valorMedida = null; 
+                if (options.dataViews[0].categorical.values[j].values[i]) valorMedida = Number.parseFloat( options.dataViews[0].categorical.values[j].values[i].toString());
+
+                if(valorMedida != null){
+                    let toolItem : ItrahcEipDataTooltip = { measureName: "", measureValue: null};
+                    toolItem.measureName = nombreMedida;
+                    toolItem.measureValue = valorMedida;
+
+                    mylisttooltips.push(toolItem);
+                }
+                
+            }
+            debugger;
             if(itemValue>0){
                 //this.selectionId.with
                 //var segmentValue = Math.abs(myValue*value.data.totalArcs/value.data.totalSegments);
+
+                
+                
                 
                 var item  = {
                     category : options.dataViews[0].categorical.categories[0].values[i].toString()
@@ -279,6 +302,8 @@ export class Visual implements IVisual {
                     , segmentPercNegative : Math.abs((-1*itemValue-itemValue/totalvalneg*totalvalpos)/totalvalneg)
                     , arcValueNegative : 0
                     , arcPercNegative : 0
+
+                    , tooltips : mylisttooltips
                 }
                 data.push(item);
                                     
@@ -308,6 +333,8 @@ export class Visual implements IVisual {
                     , segmentPercNegative : 0
                     , arcValueNegative : 0
                     , arcPercNegative : 0
+
+                    , tooltips : mylisttooltips
                     
                    
                 }
@@ -389,6 +416,7 @@ export class Visual implements IVisual {
                 //falseSerie[j].arcValueNegative = Math.abs(actualValue*actualItem.value/actualItem.totalArcs);
                 falseSerie[j].arcValueNegative = Math.abs(actualValue*falseSerie[j].value/actualItem.totalArcs);
                 falseSerie[j].arcPercNegative= Math.abs(falseSerie[j].arcValueNegative/actualItem.totalArcs);
+                falseSerie[j].tooltips = actualItem.tooltips;
             };
 
             //let targetArea : number = -1*actualValue * areaPerUnit;
