@@ -2,11 +2,13 @@ import powerbiVisualsApi from "powerbi-visuals-api";
 import ISelectionId = powerbiVisualsApi.visuals.ISelectionId;
 export interface ItrahcEipDataTooltip {
     measureName: string;
-    measureValue: number;
+    measureValue: string;
+    measureFormat: string;
 }
 export interface ItrahcEipData {
     category: string;
     value: number;
+    valueFormat: string;
     color: string;
     totalSegments: number;
     totalArcs: number;

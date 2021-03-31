@@ -70,6 +70,7 @@ import { ItrahcEipData }  from "./trahceip"
 import {ItrahcEipDataTooltip} from "./trahceip"
 
 import ISelectionId = powerbi.visuals.ISelectionId;
+import { format } from "powerbi-visuals-utils-formattingutils/lib/src/valueFormatter";
 /*
 import powerbiVisualsApi from "powerbi-visuals-api";
 import ISelectionId = powerbiVisualsApi.visuals.ISelectionId;
@@ -249,21 +250,56 @@ export class Visual implements IVisual {
             this.selectionId = this.myhost.createSelectionIdBuilder().withCategory(options.dataViews[0].categorical.categories[0],i).createSelectionId();   
             var itemValue =  Number.parseFloat( options.dataViews[0].categorical.values[0].values[i].toString()); 
             if (!sumIsPositive) itemValue = -1*itemValue;
-            
+            //var formatValue = options.dataViews[0].metadata.columns[1].format;
             //if (options.dataViews[0].categorical.values[0].values[i].valueOf()>0) {
+
+            //get metadata
+            var metadataValues = {
+                mesureFormat : ""
+                , tooltipsFormat : []
+            }
+            for(var col = 0; col < options.dataViews[0].metadata.columns.length; col++){
+                if(options.dataViews[0].metadata.columns[col].isMeasure && options.dataViews[0].metadata.columns[col].roles.measure ){
+                    metadataValues.mesureFormat = options.dataViews[0].metadata.columns[col].format;
+                } else if (options.dataViews[0].metadata.columns[col].isMeasure && options.dataViews[0].metadata.columns[col].roles.tooltips){
+                    var tooltipformat = {
+                        measureName : options.dataViews[0].metadata.columns[col].displayName
+                        , measureFormat : options.dataViews[0].metadata.columns[col].format
+                    }
+                    metadataValues.tooltipsFormat.push(tooltipformat);
+                }
+            }
             
+            //set tooltips info
             let mylisttooltips : ItrahcEipDataTooltip[] = [];
             for (var j= 1; j < options.dataViews[0].categorical.values.length; j++){
                 
                 var nombreMedida = "";
                 nombreMedida = options.dataViews[0].categorical.values[j].source.displayName.toString();
                 var valorMedida = null; 
-                if (options.dataViews[0].categorical.values[j].values[i]) valorMedida = Number.parseFloat( options.dataViews[0].categorical.values[j].values[i].toString());
+                debugger;
+                if (options.dataViews[0].categorical.values[j].values[i]) 
+                    //valorMedida = Number.parseFloat( options.dataViews[0].categorical.values[j].values[i].toString());
+                    //valorMedida = options.dataViews[0].categorical.values[j].values[i].toString();
+                    valorMedida = options.dataViews[0].categorical.values[j].values[i];
 
                 if(valorMedida != null){
-                    let toolItem : ItrahcEipDataTooltip = { measureName: "", measureValue: null};
+                    debugger;
+                    let toolItem : ItrahcEipDataTooltip = { measureName: "", measureValue: null, measureFormat: ""};
                     toolItem.measureName = nombreMedida;
                     toolItem.measureValue = valorMedida;
+                    var formattool = "";
+                    var col2 = 0;
+                    var encontrado = false;
+                    while(!encontrado && col2 < metadataValues.tooltipsFormat.length ){
+                        if(nombreMedida.toString() == metadataValues.tooltipsFormat[col2].measureName.toString()){
+                            formattool = metadataValues.tooltipsFormat[col2].measureFormat;
+                            encontrado = true;
+                        }
+                        col2++;
+                    }
+                    debugger;
+                    toolItem.measureFormat = formattool;
 
                     mylisttooltips.push(toolItem);
                 }
@@ -280,6 +316,7 @@ export class Visual implements IVisual {
                 var item  = {
                     category : options.dataViews[0].categorical.categories[0].values[i].toString()
                     , value : itemValue
+                    , valueFormat : metadataValues.mesureFormat
                     , color : this.colorPalette.getColor(options.dataViews[0].categorical.categories[0].values[i].toString()).value
                     , totalSegments : totalvalpos
                     , totalArcs : totalvalneg
@@ -318,6 +355,7 @@ export class Visual implements IVisual {
                 var item = {
                     category : options.dataViews[0].categorical.categories[0].values[i].toString()
                     , value : itemValue
+                    , valueFormat : metadataValues.mesureFormat
                     , color : this.colorPalette.getColor(options.dataViews[0].categorical.categories[0].values[i].toString()).value
                     , totalSegments : totalvalpos
                     , totalArcs : totalvalneg
@@ -561,7 +599,7 @@ export class Visual implements IVisual {
                         ,angulo = d.startAngle+(d.endAngle-d.startAngle-Math.PI)/2
                         ,angulodegrees = angulo*180/Math.PI
                         , myradius = innerr/2;
-                    mywidth = labelFontSize + 10;
+                    mywidth = labelFontSize + 5;
                     myheight = labelFontSize * d.data.order +2;
                     let retorno : string = "translate(" + mywidth + "," + myheight + ")";
                     //if(cracyLabels) retorno += "rotate(" + angulodegrees + ")";
