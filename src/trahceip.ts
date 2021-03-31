@@ -33,6 +33,8 @@ export interface ItrahcEipData {
     arcValueNegative:number;
     arcPercNegative:number;
 
+    order: number;
+
     tooltips : ItrahcEipDataTooltip[];
 
 }

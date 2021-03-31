@@ -243,6 +243,8 @@ export class Visual implements IVisual {
         }
         let sumIsPositive : boolean = true;
         if (Math.abs(totalvalneg)>totalvalpos) sumIsPositive = false;
+        let posOrder : number = 1;
+        let negOrder : number = 1;
         for(var i = 0;i<options.dataViews[0].categorical.categories[0].values.length;i++){
             this.selectionId = this.myhost.createSelectionIdBuilder().withCategory(options.dataViews[0].categorical.categories[0],i).createSelectionId();   
             var itemValue =  Number.parseFloat( options.dataViews[0].categorical.values[0].values[i].toString()); 
@@ -267,7 +269,7 @@ export class Visual implements IVisual {
                 }
                 
             }
-            debugger;
+            
             if(itemValue>0){
                 //this.selectionId.with
                 //var segmentValue = Math.abs(myValue*value.data.totalArcs/value.data.totalSegments);
@@ -303,9 +305,12 @@ export class Visual implements IVisual {
                     , arcValueNegative : 0
                     , arcPercNegative : 0
 
+                    , order : posOrder
+
                     , tooltips : mylisttooltips
                 }
                 data.push(item);
+                posOrder++;
                                     
             } else {
                 //var segmentValue = Math.abs(myValue*value.data.totalSegments/value.data.totalArcs);
@@ -334,11 +339,14 @@ export class Visual implements IVisual {
                     , arcValueNegative : 0
                     , arcPercNegative : 0
 
+                    , order : negOrder
+
                     , tooltips : mylisttooltips
                     
                    
                 }
                 dataneg.push(item);
+                negOrder++;
                 
             }
         }
@@ -416,6 +424,8 @@ export class Visual implements IVisual {
                 //falseSerie[j].arcValueNegative = Math.abs(actualValue*actualItem.value/actualItem.totalArcs);
                 falseSerie[j].arcValueNegative = Math.abs(actualValue*falseSerie[j].value/actualItem.totalArcs);
                 falseSerie[j].arcPercNegative= Math.abs(falseSerie[j].arcValueNegative/actualItem.totalArcs);
+                //falseSerie[j].order = actualItem.order;
+                
                 falseSerie[j].tooltips = actualItem.tooltips;
             };
 
@@ -536,6 +546,39 @@ export class Visual implements IVisual {
                 (tooltipEvent: TooltipEventArgs<any>) => ItrahcEipDataTooltip.getTooltipData(tooltipEvent.data),
                 (tooltipEvent: TooltipEventArgs<any>) => tooltipEvent.data.data.selectionId
             );
+            var labelFontSize = this.visualSettings.dataLabels.fontSize;
+            let myneglabels = this.svg
+                .selectAll('mySlices')
+                //.selectAll('*')
+                .data(pie(dataneg))
+                .enter()
+                .append('text')
+                .text(function(d){ return d.data.category})
+                //.attr("transform", function(d) { return "translate(" + arcGenerator.centroid(d) + ")";  })
+                .attr("transform", function(d) { 
+                    //debugger;
+                    let mywidth = width/2,myheight = height/2
+                        ,angulo = d.startAngle+(d.endAngle-d.startAngle-Math.PI)/2
+                        ,angulodegrees = angulo*180/Math.PI
+                        , myradius = innerr/2;
+                    mywidth = labelFontSize + 10;
+                    myheight = labelFontSize * d.data.order +2;
+                    let retorno : string = "translate(" + mywidth + "," + myheight + ")";
+                    //if(cracyLabels) retorno += "rotate(" + angulodegrees + ")";
+                    return retorno;
+                    //return "translate(" + mywidth + "," + myheight + ")rotate(" + angulodegrees + ")" ;
+                })
+                .style("text-anchor", "middle") 
+                .style("font-size", this.visualSettings.dataLabels.fontSize.toString()+"pt")
+                //.style("fill", this.visualSettings.dataLabels.fontColor);
+                .style("fill", function(d){return d.data.color});
+            /*
+            this.tooltipServiceWrapper.addTooltip(myneglabels,
+                (tooltipEvent: TooltipEventArgs<any>) => ItrahcEipDataTooltip.getTooltipData(tooltipEvent.data),
+                (tooltipEvent: TooltipEventArgs<any>) => tooltipEvent.data.data.selectionId
+            );
+            */
+            
         }
         /** All finished  */
         console.log('Rendered!');
