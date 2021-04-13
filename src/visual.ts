@@ -523,13 +523,16 @@ export class Visual implements IVisual {
             .data(pie(data))
             .enter()
             .append('path')
-                .attr('d', d3.arc<d3.PieArcDatum<ItrahcEipData>>()
-                    .innerRadius(0)
-                    .outerRadius(innerr)
-                )
-                .attr('fill', (d) => d.data.color)
-                .attr('stroke', 'black')
-                .style('stroke-width', '0px');
+            .attr('d', d3.arc<d3.PieArcDatum<ItrahcEipData>>()
+                .innerRadius(0)
+                .outerRadius(innerr)
+            )
+            .attr('fill', (d) => d.data.color)
+            .attr('stroke', 'black')
+            .style('stroke-width', '0px')
+            .on('click',(d) => {
+                this.selectionManager.select(d.data.selectionId,true)
+            });
                 
         //.style('opacity', 0.7);
         //this.sele
