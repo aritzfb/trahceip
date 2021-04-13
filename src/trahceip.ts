@@ -231,11 +231,11 @@ export class ItrahcEipDataTooltip {
                 
                 var strDate = dateFormatter.format(formatedDate);
 
-                isDate = strDate == formatedValue;
+                isDate = strDate.substr(0,10) == formatedValue.substr(0,10);
             } catch (e){}
             if (value.data.tooltips[i].measureFormat && value.data.tooltips[i].measureFormat != ""){
                 var formatString = value.data.tooltips[i].measureFormat;
-                if (isDate) formatString = "yy\\-MM\\-dd hh:mm tt";
+                //if (isDate) formatString = "yy\\-MM\\-dd hh:mm tt";
                 let tooltipFormatter = valueFormatter.create({ format: formatString });
                 formatedValue = tooltipFormatter.format(value.data.tooltips[i].measureValue);
                 if(isDate) formatedValue = tooltipFormatter.format(formatedDate);

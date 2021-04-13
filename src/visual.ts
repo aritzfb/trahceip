@@ -599,7 +599,7 @@ export class Visual implements IVisual {
                         ,angulo = d.startAngle+(d.endAngle-d.startAngle-Math.PI)/2
                         ,angulodegrees = angulo*180/Math.PI
                         , myradius = innerr/2;
-                    mywidth = labelFontSize + 5;
+                    mywidth = 2*labelFontSize + 5;
                     myheight = labelFontSize * d.data.order +2;
                     let retorno : string = "translate(" + mywidth + "," + myheight + ")";
                     //if(cracyLabels) retorno += "rotate(" + angulodegrees + ")";
