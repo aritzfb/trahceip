@@ -277,14 +277,14 @@ export class Visual implements IVisual {
                 var nombreMedida = "";
                 nombreMedida = options.dataViews[0].categorical.values[j].source.displayName.toString();
                 var valorMedida = null; 
-                debugger;
+                
                 if (options.dataViews[0].categorical.values[j].values[i]) 
                     //valorMedida = Number.parseFloat( options.dataViews[0].categorical.values[j].values[i].toString());
                     //valorMedida = options.dataViews[0].categorical.values[j].values[i].toString();
                     valorMedida = options.dataViews[0].categorical.values[j].values[i];
 
                 if(valorMedida != null){
-                    debugger;
+                    
                     let toolItem : ItrahcEipDataTooltip = { measureName: "", measureValue: null, measureFormat: ""};
                     toolItem.measureName = nombreMedida;
                     toolItem.measureValue = valorMedida;
@@ -298,7 +298,7 @@ export class Visual implements IVisual {
                         }
                         col2++;
                     }
-                    debugger;
+                    
                     toolItem.measureFormat = formattool;
 
                     mylisttooltips.push(toolItem);
@@ -532,7 +532,6 @@ export class Visual implements IVisual {
                 .style('stroke-width', '0px');
                 
         //.style('opacity', 0.7);
-        debugger;
         //this.sele
         //this.tooltipServiceWrapper.show();
         /*
@@ -586,27 +585,30 @@ export class Visual implements IVisual {
             );
             var labelFontSize = this.visualSettings.dataLabels.fontSize;
             let myneglabels = this.svg
-                .selectAll('mySlices')
+                //.selectAll('mySlices')
                 //.selectAll('*')
+                .selectAll('myNegSlices')
+                //.select('myNegSlices')
+                //.selectAll('')
                 .data(pie(dataneg))
                 .enter()
                 .append('text')
                 .text(function(d){ return d.data.category})
                 //.attr("transform", function(d) { return "translate(" + arcGenerator.centroid(d) + ")";  })
                 .attr("transform", function(d) { 
-                    //debugger;
+                    debugger;
                     let mywidth = width/2,myheight = height/2
                         ,angulo = d.startAngle+(d.endAngle-d.startAngle-Math.PI)/2
                         ,angulodegrees = angulo*180/Math.PI
                         , myradius = innerr/2;
-                    mywidth = 2*labelFontSize + 5;
-                    myheight = labelFontSize * d.data.order +2;
+                    mywidth = 5;
+                    myheight = d.data.order * (labelFontSize  +2);
                     let retorno : string = "translate(" + mywidth + "," + myheight + ")";
                     //if(cracyLabels) retorno += "rotate(" + angulodegrees + ")";
                     return retorno;
                     //return "translate(" + mywidth + "," + myheight + ")rotate(" + angulodegrees + ")" ;
                 })
-                .style("text-anchor", "middle") 
+                .style("text-anchor", "left") 
                 .style("font-size", this.visualSettings.dataLabels.fontSize.toString()+"pt")
                 //.style("fill", this.visualSettings.dataLabels.fontColor);
                 .style("fill", function(d){return d.data.color});

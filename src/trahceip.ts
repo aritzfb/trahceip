@@ -46,7 +46,7 @@ import { dataLabelsSettings } from "./settings";
 import { DateTimeUnit } from "powerbi-visuals-utils-formattingutils/lib/src/formattingService/iFormattingService";
 export class ItrahcEipDataTooltip {
     public static getTooltipData(value: any): VisualTooltipDataItem[] {
-        debugger;
+        //debugger;
         //let language = getLocalizedString(this.locale, "LanguageKey");
         //_this.options.host.locale;
         //let percentFormat = valueFormatter.create({ format: "0.00 %;-0.00 %;0.00 %" , cultureSelector:this.myhost.locale});
@@ -216,7 +216,7 @@ export class ItrahcEipDataTooltip {
         //return [{selectionId:value.data.selectionId}];
 
         //tooltips
-        debugger;
+        //debugger;
         for(var i = 0; i < value.data.tooltips.length; i++){
             var formatedValue = value.data.tooltips[i].measureValue.toString();
             var isDate = false;
